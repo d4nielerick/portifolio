@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | Portfolio</title>
+    <style>
+      :root {
+        --bg: #f4f1e9;
+        --panel: #fffdf8;
+        --line: #ddd5c6;
+        --text: #1f1f1f;
+        --muted: #5f5f5f;
+        --accent: #0d6e6e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", system-ui, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .container { width: min(980px, 92%); margin: 28px auto 64px; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+      h1, h2 { margin: 0 0 10px; }
+      p { margin: 0 0 14px; color: var(--muted); }
+      form { display: grid; gap: 10px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+      label { display: grid; gap: 6px; font-size: 0.9rem; color: var(--muted); }
+      input, textarea {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        font: inherit;
+        background: #fff;
+        color: var(--text);
+      }
+      textarea { min-height: 90px; resize: vertical; }
+      .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      button {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 9px 12px;
+        border-radius: 10px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .primary { background: #d4ecec; border-color: #9ed7d7; }
+      .danger { background: #ffe6e1; border-color: #ffc6bc; }
+      .muted { background: #edf0f4; border-color: #d4d9e2; }
+      .list { display: grid; gap: 8px; }
+      .item {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .item small { color: var(--muted); }
+      .live-canvas {
+        display: grid;
+        gap: 12px;
+      }
+      .live-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px;
+        background: #fff;
+        display: grid;
+        gap: 10px;
+      }
+      .live-card.drag-over {
+        outline: 2px solid #93c5fd;
+      }
+      .live-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .drag-handle {
+        border: 1px dashed #b8bfcc;
+        border-radius: 8px;
+        background: #f7f9fc;
+        padding: 5px 8px;
+        font-size: 0.82rem;
+        color: #5d6777;
+        cursor: move;
+        user-select: none;
+      }
+      .live-preview {
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: #0f172a;
+      }
+      .live-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        display: block;
+      }
+      .live-fields {
+        display: grid;
+        gap: 6px;
+      }
+      .edit-link {
+        border: 0;
+        background: transparent;
+        padding: 0;
+        text-align: left;
+        color: #0f172a;
+        cursor: pointer;
+        font: inherit;
+      }
+      .edit-link.muted {
+        color: var(--muted);
+      }
+      .live-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .status {
+        margin: 8px 0 0;
+        font-size: 0.86rem;
+        color: #355274;
+      }
+      #admin-area[hidden] { display: none; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="card" id="access-card">
+        <h1>Area administrativa</h1>
+        <p>Esta pagina nao aparece no portfolio publico. Entre com o PIN para gerenciar os projetos.</p>
+        <form id="access-form">
+          <label>PIN
+            <input id="pin" type="password" required />
+          </label>
+          <div class="actions">
+            <button class="primary" type="submit">Entrar</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="admin-area" hidden>
+        <p class="status" id="admin-status">Status: pronto</p>
+        <article class="card">
+          <h2>Novo projeto</h2>
+          <form id="project-form">
+            <div class="grid">
+              <label>Nome
+                <input id="project-name" required />
+              </label>
+              <label>Ano
+                <input id="project-year" type="number" min="2000" max="2100" required />
+              </label>
+              <label>Altura da thumb (px)
+                <input id="project-thumb-height" type="number" min="180" max="900" step="10" value="420" required />
+              </label>
+              <label>Categoria
+                <input id="project-type" required />
+              </label>
+              <label>Stack (separado por virgula)
+                <input id="project-stack" required />
+              </label>
+            </div>
+            <label>Descricao
+              <textarea id="project-description" required></textarea>
+            </label>
+            <div class="grid">
+              <label>URL do site
+                <input id="project-url" type="url" />
+              </label>
+              <label>Imagem por URL (opcional)
+                <input id="project-image-url" type="url" />
+              </label>
+              <label>Ou upload da imagem (opcional)
+                <input id="project-image-file" type="file" accept="image/*" />
+              </label>
+            </div>
+            <div class="actions">
+              <button class="primary" id="submit-project" type="submit">Salvar projeto</button>
+              <button class="muted" id="cancel-edit" type="button" hidden>Cancelar edicao</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card">
+          <h2>Projetos cadastrados</h2>
+          <div class="actions" style="margin-bottom: 10px;">
+            <button id="import-existing" type="button">Importar existentes</button>
+            <button class="danger" id="clear-projects" type="button">Limpar todos</button>
+          </div>
+          <div class="list" id="project-list"></div>
+        </article>
+
+        <article class="card">
+          <h2>Migracao do file://</h2>
+          <p>Cole aqui o JSON exportado do navegador (origem file://) para importar todos os projetos.</p>
+          <label>JSON dos projetos
+            <textarea id="migration-json" placeholder='[{"id":"...","name":"...","image":"..."}]'></textarea>
+          </label>
+          <div class="actions">
+            <button class="primary" id="import-migration" type="button">Importar JSON</button>
+            <button class="muted" id="clear-migration" type="button">Limpar campo</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Live Edit (Front-end)</h2>
+          <p>Reordene cards, ajuste altura da thumb e clique nos textos para editar. No fim, salve as alteracoes.</p>
+          <div class="actions" style="margin-bottom: 10px;">
+            <button id="toggle-live-edit" type="button">Abrir live edit</button>
+          </div>
+          <section id="live-editor" hidden>
+            <div class="live-canvas" id="live-canvas"></div>
+            <div class="live-actions" style="margin-top: 12px;">
+              <button class="primary" id="save-live-edit" type="button">Salvar alteracoes</button>
+              <button class="muted" id="discard-live-edit" type="button">Descartar alteracoes</button>
+            </div>
+          </section>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const storageKey = "portfolio_custom_projects_v1";
+      const managedKey = "portfolio_projects_managed_v1";
+      const dbName = "portfolio_storage_v2";
+      const dbStore = "kv";
+      const authTokenKey = "portfolio_admin_auth_token_v1";
+      const baseProjects = [
+        {
+          id: "base-1",
+          custom: false,
+          name: "Hosana Brasil",
+          year: "2025",
+          thumbHeight: 420,
+          stack: ["HTML", "CSS", "JavaScript"],
+          type: "Landing Page",
+          description: "Site institucional com foco em comunicacao clara e navegacao orientada a conversao.",
+          image: "./imgs/hosana-brasil.jpg",
+          url: "https://example.com"
+        },
+        {
+          id: "base-2",
+          custom: false,
+          name: "Dashboard Financeiro",
+          year: "2024",
+          thumbHeight: 420,
+          stack: ["React", "TypeScript", "Chart.js"],
+          type: "Dashboard",
+          description: "Painel com indicadores de receita, despesas e performance por periodo.",
+          image: "https://images.unsplash.com/photo-1551281044-8c2f75f3c95d?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        },
+        {
+          id: "base-3",
+          custom: false,
+          name: "Loja de Moda",
+          year: "2024",
+          thumbHeight: 420,
+          stack: ["Next.js", "Tailwind", "Stripe"],
+          type: "E-commerce",
+          description: "Catalogo completo com checkout e jornada de compra simplificada.",
+          image: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        },
+        {
+          id: "base-4",
+          custom: false,
+          name: "Portal Educacional",
+          year: "2023",
+          thumbHeight: 420,
+          stack: ["Vue", "Node", "MongoDB"],
+          type: "Web App",
+          description: "Area do aluno com trilhas, aulas e dashboard de acompanhamento.",
+          image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        }
+      ];
+
+      const accessCard = document.getElementById("access-card");
+      const adminArea = document.getElementById("admin-area");
+      const accessForm = document.getElementById("access-form");
+      const pinInput = document.getElementById("pin");
+      const projectForm = document.getElementById("project-form");
+      const projectList = document.getElementById("project-list");
+      const importExistingButton = document.getElementById("import-existing");
+      const clearProjectsButton = document.getElementById("clear-projects");
+      const submitProjectButton = document.getElementById("submit-project");
+      const cancelEditButton = document.getElementById("cancel-edit");
+      const toggleLiveEditButton = document.getElementById("toggle-live-edit");
+      const liveEditor = document.getElementById("live-editor");
+      const liveCanvas = document.getElementById("live-canvas");
+      const saveLiveEditButton = document.getElementById("save-live-edit");
+      const discardLiveEditButton = document.getElementById("discard-live-edit");
+      const adminStatus = document.getElementById("admin-status");
+      const migrationJson = document.getElementById("migration-json");
+      const importMigrationButton = document.getElementById("import-migration");
+      const clearMigrationButton = document.getElementById("clear-migration");
+
+      const projectName = document.getElementById("project-name");
+      const projectYear = document.getElementById("project-year");
+      const projectType = document.getElementById("project-type");
+      const projectThumbHeight = document.getElementById("project-thumb-height");
+      const projectStack = document.getElementById("project-stack");
+      const projectDescription = document.getElementById("project-description");
+      const projectUrl = document.getElementById("project-url");
+      const projectImageUrl = document.getElementById("project-image-url");
+      const projectImageFile = document.getElementById("project-image-file");
+      let editingProjectId = null;
+      let liveDraftProjects = [];
+      let draggingProjectId = null;
+      let portfolioDbPromise = null;
+
+      function getAdminToken() {
+        return sessionStorage.getItem(authTokenKey) || "";
+      }
+
+      function setAdminToken(token) {
+        sessionStorage.setItem(authTokenKey, token);
+      }
+
+      function clearAdminToken() {
+        sessionStorage.removeItem(authTokenKey);
+      }
+
+      function createProjectId() {
+        return `custom-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+      }
+
+      function normalizeStack(stackText) {
+        return stackText.split(",").map((item) => item.trim()).filter(Boolean);
+      }
+
+      function normalizeThumbHeight(value) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) return 420;
+        return Math.min(900, Math.max(180, numeric));
+      }
+
+      function normalizeImportedProjects(input) {
+        const source = Array.isArray(input)
+          ? input
+          : (input && Array.isArray(input.projects) ? input.projects : []);
+
+        return source
+          .filter((project) => project && typeof project === "object")
+          .map((project) => {
+            const stackValue = Array.isArray(project.stack)
+              ? project.stack
+              : String(project.stack || "").split(",").map((item) => item.trim()).filter(Boolean);
+
+            return {
+              id: String(project.id || createProjectId()),
+              custom: true,
+              name: String(project.name || "Sem nome"),
+              year: String(project.year || ""),
+              thumbHeight: normalizeThumbHeight(project.thumbHeight),
+              type: String(project.type || "Sem categoria"),
+              stack: stackValue,
+              description: String(project.description || ""),
+              url: String(project.url || ""),
+              image: String(project.image || project.thumbImage || ""),
+              coverImage: String(project.coverImage || "")
+            };
+          })
+          .filter((project) => project.image);
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Falha ao ler imagem"));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function loadImageFromSource(source) {
+        return new Promise((resolve, reject) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = () => reject(new Error("Falha ao carregar imagem"));
+          image.src = source;
+        });
+      }
+
+      async function buildCoverImageFromSource(source) {
+        const image = await loadImageFromSource(source);
+        const targetWidth = 400;
+        const targetHeight = 700;
+        const targetRatio = targetWidth / targetHeight;
+        const sourceRatio = image.width / image.height;
+
+        let cropWidth = image.width;
+        let cropHeight = image.height;
+        if (sourceRatio > targetRatio) {
+          cropWidth = Math.max(1, Math.round(image.height * targetRatio));
+          cropHeight = image.height;
+        } else {
+          cropWidth = image.width;
+          cropHeight = Math.max(1, Math.round(image.width / targetRatio));
+        }
+
+        const sx = Math.max(0, Math.round((image.width - cropWidth) / 2));
+        const sy = 0;
+        const canvas = document.createElement("canvas");
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const context = canvas.getContext("2d");
+        if (!context) return source;
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(
+          image,
+          sx,
+          sy,
+          cropWidth,
+          Math.min(cropHeight, image.height),
+          0,
+          0,
+          targetWidth,
+          targetHeight
+        );
+        return canvas.toDataURL("image/jpeg", 0.96);
+      }
+
+      function openPortfolioDb() {
+        if (portfolioDbPromise) return portfolioDbPromise;
+        portfolioDbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(dbName, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(dbStore)) {
+              db.createObjectStore(dbStore);
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error("Falha ao abrir banco local"));
+        });
+        return portfolioDbPromise;
+      }
+
+      async function dbGet(key) {
+        const db = await openPortfolioDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(dbStore, "readonly");
+          const store = tx.objectStore(dbStore);
+          const request = store.get(key);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error("Falha ao ler banco local"));
+        });
+      }
+
+      async function dbSet(key, value) {
+        const db = await openPortfolioDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(dbStore, "readwrite");
+          const store = tx.objectStore(dbStore);
+          const request = store.put(value, key);
+          request.onsuccess = () => resolve(true);
+          request.onerror = () => reject(request.error || new Error("Falha ao salvar no banco local"));
+        });
+      }
+
+      async function migrateLegacyStorage() {
+        const existingProjects = await dbGet(storageKey);
+        const existingManaged = await dbGet(managedKey);
+        const legacyProjects = localStorage.getItem(storageKey);
+        const legacyManaged = localStorage.getItem(managedKey);
+
+        if (existingProjects === undefined && legacyProjects !== null) {
+          await dbSet(storageKey, legacyProjects);
+        }
+        if (existingManaged === undefined && legacyManaged !== null) {
+          await dbSet(managedKey, legacyManaged);
+        }
+      }
+
+      async function loadProjects() {
+        try {
+          const response = await fetch("/api/projects");
+          if (response.ok) {
+            const payload = await response.json();
+            const fromServer = Array.isArray(payload?.projects) ? payload.projects : [];
+            return fromServer.map((project) => {
+              const { thumbImage, ...rest } = project || {};
+              return {
+                ...rest,
+                image: rest.image || thumbImage || "",
+                coverImage: rest.coverImage || ""
+              };
+            });
+          }
+        } catch {
+          // fallback local
+        }
+
+        try {
+          await migrateLegacyStorage();
+          const raw = await dbGet(storageKey);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed.map((project) => {
+            const { thumbImage, ...rest } = project || {};
+            return {
+              ...rest,
+              image: rest.image || thumbImage || "",
+              coverImage: rest.coverImage || ""
+            };
+          });
+        } catch {
+          return [];
+        }
+      }
+
+      async function saveProjects(projects) {
+        const authToken = getAdminToken();
+        try {
+          const response = await fetch("/api/projects", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
+            },
+            body: JSON.stringify({ projects })
+          });
+
+          if (response.status === 401) {
+            clearAdminToken();
+            setStatus("sessao expirada: entre novamente");
+            alert("Sessao expirada. Entre novamente no admin.");
+            accessCard.hidden = false;
+            adminArea.hidden = true;
+            return false;
+          }
+
+          if (response.ok) {
+            return true;
+          }
+        } catch {
+          // fallback local
+        }
+
+        try {
+          await dbSet(managedKey, "1");
+          await dbSet(storageKey, JSON.stringify(projects));
+          return true;
+        } catch (error) {
+          setStatus("erro ao salvar no banco local");
+          alert("Nao foi possivel salvar no armazenamento local do navegador.");
+          return false;
+        }
+      }
+
+      function setStatus(message) {
+        if (!adminStatus) return;
+        adminStatus.textContent = `Status: ${message}`;
+      }
+
+      function cloneProjects(projects) {
+        return projects.map((project) => ({
+          ...project,
+          stack: Array.isArray(project.stack) ? [...project.stack] : []
+        }));
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll("\"", "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      async function syncLiveDraftFromStorage() {
+        liveDraftProjects = cloneProjects(await loadProjects());
+      }
+
+      function updateLiveProject(projectId, patch) {
+        liveDraftProjects = liveDraftProjects.map((project) =>
+          project.id === projectId ? { ...project, ...patch } : project
+        );
+      }
+
+      function moveLiveProjectBefore(dragId, targetId) {
+        if (!dragId || !targetId || dragId === targetId) return;
+        const list = [...liveDraftProjects];
+        const dragIndex = list.findIndex((project) => project.id === dragId);
+        const targetIndex = list.findIndex((project) => project.id === targetId);
+        if (dragIndex < 0 || targetIndex < 0) return;
+
+        const [dragItem] = list.splice(dragIndex, 1);
+        list.splice(targetIndex, 0, dragItem);
+        liveDraftProjects = list;
+      }
+
+      function editLiveField(projectId, field) {
+        const project = liveDraftProjects.find((entry) => entry.id === projectId);
+        if (!project) return;
+
+        const current = field === "stack"
+          ? (Array.isArray(project.stack) ? project.stack.join(", ") : "")
+          : String(project[field] || "");
+        const labelMap = {
+          name: "Nome do projeto",
+          type: "Categoria",
+          year: "Ano",
+          url: "URL",
+          description: "Descricao",
+          stack: "Stack (separado por virgula)"
+        };
+        const next = window.prompt(`Editar: ${labelMap[field] || field}`, current);
+        if (next === null) return;
+        const clean = next.trim();
+        if (!clean) return;
+
+        if (field === "stack") {
+          updateLiveProject(projectId, { stack: normalizeStack(clean) });
+        } else if (field === "year") {
+          updateLiveProject(projectId, { year: clean.replace(/\D/g, "").slice(0, 4) || current });
+        } else {
+          updateLiveProject(projectId, { [field]: clean });
+        }
+        renderLiveEditor();
+      }
+
+      function renderLiveEditor() {
+        if (liveEditor.hidden) return;
+        liveCanvas.innerHTML = "";
+
+        if (!liveDraftProjects.length) {
+          liveCanvas.innerHTML = "<small>Nenhum projeto para editar.</small>";
+          return;
+        }
+
+        liveDraftProjects.forEach((project) => {
+          const thumbHeight = normalizeThumbHeight(project.thumbHeight);
+          const stackText = Array.isArray(project.stack) ? project.stack.join(", ") : "";
+          const card = document.createElement("article");
+          card.className = "live-card";
+          card.draggable = true;
+          card.dataset.id = project.id;
+          card.innerHTML = `
+            <div class="live-top">
+              <span class="drag-handle">Arraste para reordenar</span>
+              <small>${escapeHtml(project.id)}</small>
+            </div>
+            <div class="live-preview" style="height: ${thumbHeight}px;">
+              <img src="${escapeHtml(project.coverImage || project.image)}" alt="${escapeHtml(project.name)}" />
+            </div>
+            <div>
+              <label>Altura da thumb: <strong>${thumbHeight}px</strong></label>
+              <input data-thumb-range="${escapeHtml(project.id)}" type="range" min="180" max="900" step="10" value="${thumbHeight}" />
+            </div>
+            <div class="live-fields">
+              <button class="edit-link" data-edit-field="${escapeHtml(project.id)}::name"><strong>${escapeHtml(project.name || "Sem nome")}</strong></button>
+              <button class="edit-link muted" data-edit-field="${escapeHtml(project.id)}::type">${escapeHtml(project.type || "Sem categoria")} • ${escapeHtml(project.year || "-")}</button>
+              <button class="edit-link muted" data-edit-field="${escapeHtml(project.id)}::stack">${escapeHtml(stackText || "Sem stack")}</button>
+              <button class="edit-link muted" data-edit-field="${escapeHtml(project.id)}::url">${escapeHtml(project.url || "Sem URL")}</button>
+              <button class="edit-link muted" data-edit-field="${escapeHtml(project.id)}::description">${escapeHtml(project.description || "Sem descricao")}</button>
+            </div>
+          `;
+
+          card.addEventListener("dragstart", () => {
+            draggingProjectId = project.id;
+          });
+
+          card.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            card.classList.add("drag-over");
+          });
+
+          card.addEventListener("dragleave", () => {
+            card.classList.remove("drag-over");
+          });
+
+          card.addEventListener("drop", (event) => {
+            event.preventDefault();
+            card.classList.remove("drag-over");
+            moveLiveProjectBefore(draggingProjectId, project.id);
+            renderLiveEditor();
+          });
+
+          card.querySelector(`[data-thumb-range="${project.id}"]`).addEventListener("input", (event) => {
+            const nextHeight = normalizeThumbHeight(event.target.value);
+            updateLiveProject(project.id, { thumbHeight: nextHeight });
+            card.querySelector("label strong").textContent = `${nextHeight}px`;
+            card.querySelector(".live-preview").style.height = `${nextHeight}px`;
+          });
+
+          card.querySelectorAll("[data-edit-field]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const [id, field] = button.dataset.editField.split("::");
+              editLiveField(id, field);
+            });
+          });
+
+          liveCanvas.appendChild(card);
+        });
+      }
+
+      function resetFormState() {
+        editingProjectId = null;
+        projectForm.reset();
+        projectYear.value = String(new Date().getFullYear());
+        projectThumbHeight.value = "420";
+        submitProjectButton.textContent = "Salvar projeto";
+        cancelEditButton.hidden = true;
+      }
+
+      async function startEdit(projectId) {
+        const projects = await loadProjects();
+        const project = projects.find((entry) => entry.id === projectId);
+        if (!project) return;
+
+        editingProjectId = project.id;
+        projectName.value = project.name || "";
+        projectYear.value = project.year || "";
+        projectThumbHeight.value = String(normalizeThumbHeight(project.thumbHeight));
+        projectType.value = project.type || "";
+        projectStack.value = Array.isArray(project.stack) ? project.stack.join(", ") : "";
+        projectDescription.value = project.description || "";
+        projectUrl.value = project.url || "";
+        projectImageUrl.value =
+          project.image && !String(project.image).startsWith("data:")
+            ? project.image
+            : "";
+        projectImageFile.value = "";
+        submitProjectButton.textContent = "Atualizar projeto";
+        cancelEditButton.hidden = false;
+      }
+
+      async function importBaseProjects() {
+        const current = await loadProjects();
+        const existingKeys = new Set(
+          current.map((project) => `${project.name}::${project.url}`.toLowerCase())
+        );
+        const toImport = baseProjects
+          .filter((project) => !existingKeys.has(`${project.name}::${project.url}`.toLowerCase()))
+          .map((project) => ({
+            ...project,
+            id: `imported-${project.id}`,
+            custom: true
+          }));
+
+        if (!toImport.length) return 0;
+        await saveProjects([...current, ...toImport]);
+        return toImport.length;
+      }
+
+      async function renderList() {
+        const projects = await loadProjects();
+        projectList.innerHTML = "";
+
+        if (!projects.length) {
+          projectList.innerHTML = "<small>Nenhum projeto interno cadastrado.</small>";
+          return;
+        }
+
+        projects.forEach((project) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerHTML = `
+            <div>
+              <strong>${project.name}</strong><br />
+              <small>${project.type} • ${project.year} • ${normalizeThumbHeight(project.thumbHeight)}px</small>
+            </div>
+            <div class="actions">
+              <button type="button" data-up="${project.id}">Subir</button>
+              <button type="button" data-down="${project.id}">Descer</button>
+              <button type="button" data-edit="${project.id}">Editar</button>
+              <button type="button" data-remove="${project.id}">Remover</button>
+            </div>
+          `;
+
+          item.querySelector("[data-up]").addEventListener("click", async () => {
+            const current = await loadProjects();
+            const index = current.findIndex((entry) => entry.id === project.id);
+            if (index <= 0) return;
+            const next = [...current];
+            [next[index - 1], next[index]] = [next[index], next[index - 1]];
+            const saved = await saveProjects(next);
+            if (!saved) return;
+            await renderList();
+            await syncLiveDraftFromStorage();
+            renderLiveEditor();
+            setStatus(`projeto movido para cima: ${project.name}`);
+          });
+
+          item.querySelector("[data-down]").addEventListener("click", async () => {
+            const current = await loadProjects();
+            const index = current.findIndex((entry) => entry.id === project.id);
+            if (index < 0 || index >= current.length - 1) return;
+            const next = [...current];
+            [next[index], next[index + 1]] = [next[index + 1], next[index]];
+            const saved = await saveProjects(next);
+            if (!saved) return;
+            await renderList();
+            await syncLiveDraftFromStorage();
+            renderLiveEditor();
+            setStatus(`projeto movido para baixo: ${project.name}`);
+          });
+
+          item.querySelector("[data-edit]").addEventListener("click", async () => {
+            await startEdit(project.id);
+            projectName.focus();
+          });
+
+          item.querySelector("[data-remove]").addEventListener("click", async () => {
+            const current = await loadProjects();
+            const next = current.filter((entry) => entry.id !== project.id);
+            await saveProjects(next);
+            if (editingProjectId === project.id) {
+              resetFormState();
+            }
+            await renderList();
+            await syncLiveDraftFromStorage();
+            renderLiveEditor();
+            setStatus(`projeto removido: ${project.name}`);
+          });
+
+          projectList.appendChild(item);
+        });
+      }
+
+      accessForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const pin = pinInput.value.trim();
+        if (!pin) {
+          alert("Informe o PIN.");
+          return;
+        }
+
+        setStatus("validando acesso");
+        let token = "";
+        try {
+          const response = await fetch("/api/admin/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pin })
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || !payload?.token) {
+            alert(payload?.error || "PIN invalido.");
+            return;
+          }
+          token = String(payload.token);
+        } catch {
+          alert("Falha ao validar PIN no servidor.");
+          return;
+        }
+
+        setAdminToken(token);
+        pinInput.value = "";
+
+        accessCard.hidden = true;
+        adminArea.hidden = false;
+        projectYear.value = String(new Date().getFullYear());
+        projectThumbHeight.value = "420";
+        const current = await loadProjects();
+        if (!current.length) {
+          await importBaseProjects();
+        }
+        await renderList();
+        await syncLiveDraftFromStorage();
+        setStatus("area administrativa liberada");
+      });
+
+      projectForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        submitProjectButton.disabled = true;
+        submitProjectButton.textContent = "Salvando...";
+        setStatus("processando alteracoes do projeto");
+
+        try {
+          const projects = await loadProjects();
+          const currentEditingProject = editingProjectId
+            ? projects.find((entry) => entry.id === editingProjectId)
+            : null;
+
+          const imageUrlInput = projectImageUrl.value.trim();
+          const hasImageUrlInput = imageUrlInput.length > 0;
+          const file = projectImageFile.files && projectImageFile.files[0];
+          let image = currentEditingProject ? (currentEditingProject.image || "") : "";
+          let coverImage = currentEditingProject
+            ? (currentEditingProject.coverImage || currentEditingProject.image || "")
+            : "";
+
+          if (file) {
+            setStatus("upload de imagem em andamento");
+            image = await readFileAsDataUrl(file);
+            coverImage = await buildCoverImageFromSource(image);
+          } else if (hasImageUrlInput) {
+            image = imageUrlInput;
+            coverImage = currentEditingProject ? (currentEditingProject.coverImage || imageUrlInput) : imageUrlInput;
+          } else if (currentEditingProject) {
+            // Campo vazio em edicao remove imagem anterior.
+            image = "";
+            coverImage = "";
+          }
+
+          const project = {
+            id: currentEditingProject ? currentEditingProject.id : createProjectId(),
+            custom: true,
+            name: projectName.value.trim(),
+            year: projectYear.value.trim(),
+            thumbHeight: normalizeThumbHeight(projectThumbHeight.value),
+            type: projectType.value.trim(),
+            stack: normalizeStack(projectStack.value),
+            description: projectDescription.value.trim(),
+            url: projectUrl.value.trim(),
+            image,
+            coverImage
+          };
+
+          let nextProjects = projects;
+          if (currentEditingProject) {
+            nextProjects = projects.map((entry) => (entry.id === project.id ? project : entry));
+          } else {
+            nextProjects = [project, ...projects];
+          }
+
+          const saved = await saveProjects(nextProjects);
+          if (!saved) return;
+
+          resetFormState();
+          await renderList();
+          await syncLiveDraftFromStorage();
+          renderLiveEditor();
+          setStatus("projeto salvo com sucesso");
+        } catch (error) {
+          setStatus("erro ao processar upload");
+          alert("Falha ao finalizar upload/salvar. Tente novamente.");
+        } finally {
+          submitProjectButton.disabled = false;
+          submitProjectButton.textContent = "Salvar projeto";
+        }
+      });
+
+      clearProjectsButton.addEventListener("click", async () => {
+        if (!window.confirm("Deseja remover todos os projetos internos?")) return;
+        const saved = await saveProjects([]);
+        if (!saved) return;
+        resetFormState();
+        await renderList();
+        await syncLiveDraftFromStorage();
+        renderLiveEditor();
+        setStatus("todos os projetos foram removidos");
+      });
+
+      cancelEditButton.addEventListener("click", () => {
+        resetFormState();
+      });
+
+      importExistingButton.addEventListener("click", async () => {
+        const importedCount = await importBaseProjects();
+        if (!importedCount) {
+          alert("Todos os projetos existentes ja foram importados.");
+          setStatus("nada novo para importar");
+        } else {
+          setStatus(`${importedCount} projeto(s) importado(s)`);
+        }
+        await renderList();
+        await syncLiveDraftFromStorage();
+        renderLiveEditor();
+      });
+
+      toggleLiveEditButton.addEventListener("click", async () => {
+        const isHidden = liveEditor.hasAttribute("hidden");
+        if (isHidden) {
+          await syncLiveDraftFromStorage();
+          liveEditor.removeAttribute("hidden");
+          toggleLiveEditButton.textContent = "Fechar live edit";
+          renderLiveEditor();
+          return;
+        }
+
+        liveEditor.setAttribute("hidden", "");
+        toggleLiveEditButton.textContent = "Abrir live edit";
+      });
+
+      saveLiveEditButton.addEventListener("click", async () => {
+        saveLiveEditButton.disabled = true;
+        saveLiveEditButton.textContent = "Salvando...";
+        const saved = await saveProjects(liveDraftProjects);
+        if (!saved) {
+          saveLiveEditButton.disabled = false;
+          saveLiveEditButton.textContent = "Salvar alteracoes";
+          return;
+        }
+        await renderList();
+        saveLiveEditButton.disabled = false;
+        saveLiveEditButton.textContent = "Salvar alteracoes";
+        setStatus("live edit salvo com sucesso");
+        alert("Alteracoes salvas com sucesso.");
+      });
+
+      discardLiveEditButton.addEventListener("click", async () => {
+        await syncLiveDraftFromStorage();
+        renderLiveEditor();
+      });
+
+      clearMigrationButton.addEventListener("click", () => {
+        migrationJson.value = "";
+      });
+
+      importMigrationButton.addEventListener("click", async () => {
+        const raw = String(migrationJson.value || "").trim();
+        if (!raw) {
+          alert("Cole o JSON antes de importar.");
+          return;
+        }
+
+        try {
+          const parsed = JSON.parse(raw);
+          const normalized = normalizeImportedProjects(parsed);
+          if (!normalized.length) {
+            alert("Nenhum projeto valido encontrado no JSON.");
+            return;
+          }
+
+          const saved = await saveProjects(normalized);
+          if (!saved) return;
+
+          await renderList();
+          await syncLiveDraftFromStorage();
+          renderLiveEditor();
+          setStatus(`migracao concluida: ${normalized.length} projeto(s)`);
+          alert(`Migracao concluida com ${normalized.length} projeto(s).`);
+        } catch (error) {
+          alert("JSON invalido. Verifique o formato e tente novamente.");
+        }
+      });
+    </script>
+  </body>
+</html>

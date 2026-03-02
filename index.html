@@ -1,0 +1,1686 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portifolio | Sites Desenvolvidos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f1114;
+        --panel: #171a1f;
+        --panel-2: #1f232b;
+        --line: #2a303a;
+        --text: #f4f5f7;
+        --muted: #b7becc;
+        --accent: #84ffd8;
+        --accent-2: #66c4ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background:
+          radial-gradient(circle at 10% -10%, #273a4c 0%, transparent 35%),
+          radial-gradient(circle at 95% -5%, #263326 0%, transparent 28%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      .container {
+        width: min(1220px, 92%);
+        margin: 0 auto;
+      }
+
+      header {
+        padding: 34px 0 26px;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 18px;
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+
+      .brand-line {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 1.2em;
+      }
+
+      .brand-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 999px;
+        overflow: hidden;
+        flex: 0 0 auto;
+      }
+
+      .brand-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .brand-name {
+        color: #dbe6f6;
+      }
+
+      .brand-star {
+        width: 18px;
+        height: 18px;
+        color: var(--accent);
+        display: inline-grid;
+        place-items: center;
+        line-height: 0;
+      }
+
+      .brand-star svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        transform-origin: 50% 50%;
+        animation: star-rotate 1.8s steps(12) infinite;
+      }
+
+      .brand-role {
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .type-cursor {
+        color: var(--accent);
+        animation: cursor-blink 0.9s steps(1) infinite;
+      }
+
+      .admin-link {
+        color: var(--muted);
+        text-decoration: none;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 7px 12px;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .top-cta-label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: none;
+      }
+
+      .hero {
+        margin-top: 30px;
+        display: grid;
+        gap: 30px;
+        padding: 24px 0 36px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-family: "Plus Jakarta Sans", sans-serif;
+        font-size: clamp(1.8rem, 5.6vw, 5.1rem);
+        line-height: 0.95;
+        max-width: 24ch;
+      }
+
+      .hero-line {
+        display: block;
+      }
+
+      .hero-line-words {
+        display: block;
+        color: #d5ddeb;
+      }
+
+      .hero-word {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(16px);
+        animation: hero-line-in 0.62s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+      }
+
+      .hero-word:nth-child(1) { animation-delay: 0.02s; }
+      .hero-word:nth-child(2) { animation-delay: 0.14s; }
+      .hero-word:nth-child(3) { animation-delay: 0.26s; }
+      .hero-word:nth-child(4) { animation-delay: 0.38s; }
+
+      .hero-line-full {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: hero-line-in 0.72s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        animation-delay: 1.18s;
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(0.98rem, 1.55vw, 1.12rem);
+        max-width: 70ch;
+      }
+
+      .hero h2 {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 500;
+        font-size: clamp(1rem, 1.8vw, 1.28rem);
+        max-width: 64ch;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .h2-arrow {
+        display: inline-block;
+        color: #bfe7ff;
+        font-size: 1em;
+        font-weight: 700;
+        line-height: 1;
+        vertical-align: middle;
+        margin-top: 4px;
+      }
+
+      .marquee {
+        margin-top: 24px;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        overflow: hidden;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 10px 0;
+      }
+
+      .marquee-track {
+        width: max-content;
+        display: flex;
+        gap: 42px;
+        animation: slide 23s linear infinite;
+      }
+
+      .marquee-strip {
+        height: clamp(34px, 4.2vw, 52px);
+        width: auto;
+        display: block;
+        opacity: 0.26;
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .gallery {
+        padding: 44px 0 80px;
+        column-count: 3;
+        column-gap: 14px;
+      }
+
+      .about-section {
+        margin-top: 18px;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        padding: 120px 0;
+        background: linear-gradient(180deg, rgba(20, 26, 36, 0.66), rgba(16, 22, 31, 0.66));
+        border: 1px solid rgba(132, 255, 216, 0.08);
+        border-radius: 18px;
+      }
+
+      .about-inner {
+        width: min(1220px, 92%);
+        margin: 0 auto;
+      }
+
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr minmax(280px, 360px) 1fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      .about-left h3 {
+        margin: 0 0 10px;
+        font-size: clamp(1.5rem, 3.3vw, 2.35rem);
+        font-weight: 700;
+        color: #e5ebf5;
+      }
+
+      .about-left p {
+        margin: 0;
+        max-width: 34ch;
+        color: #9eabbd;
+        line-height: 1.45;
+        font-size: 1rem;
+      }
+
+      .about-center {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #151b24;
+        padding: 16px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .about-kpi {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid rgba(132, 255, 216, 0.35);
+        display: grid;
+        place-items: center;
+        color: var(--accent);
+        background: rgba(18, 31, 30, 0.6);
+      }
+
+      .about-kpi strong {
+        margin: 0;
+        font-size: clamp(2.2rem, 5vw, 3.35rem);
+        line-height: 0.9;
+        color: #eff4fb;
+        display: block;
+      }
+
+      .about-kpi-text {
+        margin: 0;
+        color: #a3afbf;
+        font-size: 1.02rem;
+        line-height: 1.4;
+      }
+
+      .about-photo {
+        margin: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(132, 255, 216, 0.14);
+      }
+
+      .about-photo img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+      }
+
+      .about-right {
+        display: grid;
+        gap: 22px;
+      }
+
+      .about-mini-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        width: min(220px, 100%);
+        background: #131923;
+      }
+
+      .about-mini-card img {
+        width: 100%;
+        display: block;
+      }
+
+      .about-points {
+        display: grid;
+        gap: 18px;
+      }
+
+      .about-point {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        align-items: start;
+      }
+
+      .about-point-dot {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid rgba(132, 255, 216, 0.35);
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        background: rgba(18, 31, 30, 0.6);
+      }
+
+      .about-point-dot svg {
+        width: 12px;
+        height: 12px;
+        display: block;
+        transform-origin: 50% 50%;
+        animation: star-rotate 1.8s steps(12) infinite;
+      }
+
+      .about-point p {
+        margin: 0;
+        color: #a4b0bf;
+        line-height: 1.45;
+        font-size: 1.04rem;
+      }
+
+      .card {
+        break-inside: avoid;
+        margin-bottom: 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        background: var(--panel);
+        position: relative;
+        transition:
+          transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1),
+          border-color 0.28s ease;
+        contain: layout paint style;
+        content-visibility: auto;
+        contain-intrinsic-size: 520px;
+      }
+
+      .card:not(.live-edit):hover {
+        transform: translateY(-3px);
+        border-color: rgba(132, 255, 216, 0.45);
+      }
+
+      .card-pre-enter {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+      }
+
+      .card-enter-active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        transition:
+          opacity 0.58s cubic-bezier(0.2, 0.7, 0.2, 1),
+          transform 0.58s cubic-bezier(0.2, 0.7, 0.2, 1);
+        transition-delay: var(--enter-delay, 0ms);
+      }
+
+      .card-media {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        height: var(--thumb-height, 420px);
+        overflow: hidden;
+      }
+
+      .card-media::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(4, 11, 19, 0) 52%, rgba(4, 11, 19, 0.28) 100%);
+        opacity: 0;
+        transition: opacity 0.24s ease;
+        pointer-events: none;
+      }
+
+      .card-media.clickable-preview,
+      .card-media.clickable-preview img {
+        cursor: pointer;
+      }
+
+      .preview-hover-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        color: #d7f2ff;
+        background: rgba(9, 16, 25, 0.72);
+        border: 1px solid rgba(190, 225, 255, 0.5);
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        transform: translateY(-4px) scale(0.96);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        z-index: 4;
+      }
+
+      .card-media.clickable-preview:hover .preview-hover-icon {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .preview-hover-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .card-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        margin: 0;
+        display: block;
+      }
+
+      .card-meta {
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 8px;
+      }
+
+      .meta-block {
+        background: rgba(15, 17, 20, 0.82);
+        border: 1px solid rgba(132, 255, 216, 0.25);
+        border-radius: 10px;
+        padding: 9px 10px;
+        display: grid;
+        gap: 3px;
+      }
+
+      .meta-block h3 {
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      .meta-block p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .year {
+        border: 1px solid rgba(102, 196, 255, 0.4);
+        background: rgba(11, 22, 33, 0.85);
+        color: #bfe7ff;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 6px 9px;
+        white-space: nowrap;
+      }
+
+      .card-footer {
+        padding: 10px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 8px;
+      }
+
+      .stack {
+        color: var(--muted);
+        font-size: 0.83rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--text);
+        text-decoration: none;
+        text-align: center;
+        padding: 9px 10px;
+        border-radius: 10px;
+        font-size: 0.84rem;
+        font-weight: 700;
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .btn.primary {
+        border-color: var(--accent-2);
+        background: linear-gradient(90deg, #223247 0%, #22392f 100%);
+      }
+
+      .btn.disabled-link {
+        opacity: 0.55;
+        pointer-events: none;
+      }
+
+      .empty {
+        border: 1px dashed var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        color: var(--muted);
+        padding: 20px;
+        font-size: 0.95rem;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 3, 6, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        z-index: 100;
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .modal-panel {
+        width: min(1060px, 96vw);
+        height: min(92vh, 860px);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        background: #10141a;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+      }
+
+      .modal-image-wrap {
+        height: 100%;
+        overflow: auto;
+        background: #0d1014;
+      }
+
+      .modal-image-wrap img {
+        width: 100%;
+        display: block;
+      }
+
+      .modal-info {
+        border-left: 1px solid var(--line);
+        padding: 16px;
+        display: grid;
+        align-content: space-between;
+        gap: 20px;
+      }
+
+      .modal-info h2 {
+        margin: 0 0 8px;
+      }
+
+      .modal-info p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .preview-tools {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        gap: 10px;
+      }
+
+      .tool-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .tool-line label {
+        color: var(--muted);
+        font-size: 0.83rem;
+        min-width: 68px;
+      }
+
+      .tool-line input[type="range"] {
+        width: 100%;
+      }
+
+      .tool-value {
+        min-width: 44px;
+        text-align: right;
+        color: var(--muted);
+        font-size: 0.83rem;
+      }
+
+      .modal-close {
+        border: 1px solid var(--line);
+        background: #202733;
+        color: var(--text);
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .chat-fab {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 54px;
+        height: 54px;
+        border-radius: 999px;
+        border: 1px solid rgba(132, 255, 216, 0.45);
+        background: linear-gradient(145deg, #1d2f2d, #182433);
+        color: #e8fbf6;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        z-index: 150;
+      }
+
+      .chat-widget {
+        position: fixed;
+        right: 20px;
+        bottom: 86px;
+        width: min(360px, calc(100vw - 24px));
+        height: min(500px, 72vh);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #0f141b;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+        z-index: 150;
+      }
+
+      .chat-widget[hidden] {
+        display: none;
+      }
+
+      .chat-head {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .chat-head strong {
+        font-size: 0.92rem;
+      }
+
+      .chat-head button {
+        border: 1px solid var(--line);
+        background: #1c2430;
+        color: var(--text);
+        border-radius: 8px;
+        padding: 6px 8px;
+        cursor: pointer;
+      }
+
+      .chat-log {
+        padding: 12px;
+        overflow: auto;
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+
+      .chat-bubble {
+        max-width: 88%;
+        border-radius: 10px;
+        padding: 8px 10px;
+        font-size: 0.86rem;
+        line-height: 1.35;
+        white-space: pre-wrap;
+      }
+
+      .chat-bubble.user {
+        justify-self: end;
+        background: #223247;
+        border: 1px solid #2a4768;
+      }
+
+      .chat-bubble.bot {
+        justify-self: start;
+        background: #1b222d;
+        border: 1px solid #2b3442;
+        color: #d8deea;
+      }
+
+      .chat-form {
+        border-top: 1px solid var(--line);
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      .chat-form input {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #0b1017;
+        color: var(--text);
+        padding: 8px 10px;
+        font: inherit;
+      }
+
+      .chat-form button {
+        border: 1px solid rgba(132, 255, 216, 0.5);
+        border-radius: 8px;
+        background: #1d2c2b;
+        color: #d6fff3;
+        padding: 8px 10px;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      footer {
+        padding: 0 0 28px;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      @keyframes slide {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      @keyframes star-rotate {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes cursor-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes hero-line-in {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .card-pre-enter,
+        .card-enter-active {
+          transition: none;
+          opacity: 1;
+          transform: none;
+        }
+
+        .hero-word,
+        .hero-line-full {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+
+        .card,
+        .card-media img,
+        .card-media::after {
+          transition: none;
+        }
+      }
+
+      @media (max-width: 1030px) {
+        .gallery {
+          column-count: 2;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .modal-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-info {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .about-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .about-left p {
+          max-width: none;
+        }
+
+        .about-mini-card {
+          width: min(240px, 100%);
+        }
+      }
+
+      @media (max-width: 700px) {
+        .gallery {
+          column-count: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container">
+      <div class="top-row">
+        <span class="brand-line">
+          <span class="brand-avatar" aria-hidden="true">
+            <img src="./imgs/profile-avatar.png" alt="" />
+          </span>
+          <span class="brand-name">DANIEL POMPEU</span>
+          <span class="brand-star" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M11 21v-6.6l-4.65 4.675l-1.425-1.425L9.6 13H3v-2h6.6L4.925 6.35L6.35 4.925L11 9.6V3h2v6.6l4.65-4.675l1.425 1.425L14.4 11H21v2h-6.6l4.675 4.65l-1.425 1.425L13 14.4V21z"/>
+            </svg>
+          </span>
+          <span class="brand-role"><span id="role-typing"></span><span class="type-cursor">_</span></span>
+        </span>
+        <div class="top-actions">
+          <span class="top-cta-label">Você é designer?</span>
+          <a class="admin-link" href="./admin.html">vamos trabalhar!</a>
+        </div>
+      </div>
+
+      <section class="hero">
+        <h1>
+          <span class="hero-line hero-line-words">
+            <span class="hero-word">Crio</span>
+            <span class="hero-word">&nbsp;sites</span>
+            <span class="hero-word">&nbsp;com</span>
+            <span class="hero-word">&nbsp;propósito</span>
+          </span>
+          <span class="hero-line hero-line-full">para negócios com alma.</span>
+        </h1>
+        <h2>
+          <span>Design com cuidado</span>
+          <span class="h2-arrow" aria-hidden="true">→</span>
+          <span>entrega com compromisso</span>
+          <span class="h2-arrow" aria-hidden="true">→</span>
+          <span>sem dor de cabeça.</span>
+        </h2>
+      </section>
+
+      <section class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <img class="marquee-strip" src="./imgs/marquee.png" alt="" />
+          <img class="marquee-strip" src="./imgs/marquee.png" alt="" />
+        </div>
+      </section>
+
+    </header>
+
+    <main class="container">
+      <section class="gallery" id="portfolio"></section>
+
+      <section class="about-section" id="about">
+        <div class="about-inner">
+        <div class="about-grid">
+          <article class="about-left">
+            <h3>Sobre Mim</h3>
+            <p>
+              Transformo problemas complexos em experiências digitais claras e elegantes.
+              Meu processo combina direção visual, estratégia e execução para criar sites
+              que comunicam valor e geram resultado de verdade.
+            </p>
+          </article>
+
+          <article class="about-center">
+            <span class="about-kpi" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16l-4-5-4 5H4.06A8 8 0 0 1 12 4m0 16a8 8 0 0 1-7.94-7H8l4 5 4-5h3.94A8 8 0 0 1 12 20"/>
+              </svg>
+            </span>
+            <strong>120%</strong>
+            <p class="about-kpi-text">
+              Média de aumento em engajamento e conversão nos primeiros meses após o redesign.
+            </p>
+            <figure class="about-photo">
+              <img src="./imgs/profile-avatar.png" alt="Retrato do designer Daniel Pompeu" loading="lazy" />
+            </figure>
+          </article>
+
+          <article class="about-right">
+            <div class="about-mini-card">
+              <img src="./imgs/profile-avatar.png" alt="" loading="lazy" />
+            </div>
+
+            <div class="about-points">
+              <div class="about-point">
+                <span class="about-point-dot" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 21v-6.6l-4.65 4.675l-1.425-1.425L9.6 13H3v-2h6.6L4.925 6.35L6.35 4.925L11 9.6V3h2v6.6l4.65-4.675l1.425 1.425L14.4 11H21v2h-6.6l4.675 4.65l-1.425 1.425L13 14.4V21z"/>
+                  </svg>
+                </span>
+                <p>
+                  Cada site entregue como uma obra acabada — nada deixado pela metade.
+                </p>
+              </div>
+              <div class="about-point">
+                <span class="about-point-dot" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 21v-6.6l-4.65 4.675l-1.425-1.425L9.6 13H3v-2h6.6L4.925 6.35L6.35 4.925L11 9.6V3h2v6.6l4.65-4.675l1.425 1.425L14.4 11H21v2h-6.6l4.675 4.65l-1.425 1.425L13 14.4V21z"/>
+                  </svg>
+                </span>
+                <p>
+                  Nenhum detalhe ignorado. Nenhum projeto entregue sem estar inteiro.
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="modal" id="modal" aria-hidden="true">
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Visualizacao do projeto">
+        <div class="modal-image-wrap" id="modal-image-wrap">
+          <img id="modal-image" src="" alt="Preview ampliado do projeto" />
+        </div>
+        <div class="modal-info">
+          <div>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description"></p>
+            <p style="margin-top: 10px;"><strong>Stack:</strong> <span id="modal-stack"></span></p>
+            <div class="preview-tools">
+              <div class="tool-line">
+                <button class="btn" id="toggle-autoscroll" type="button">Iniciar auto scroll</button>
+                <button class="btn" id="scroll-top" type="button">Voltar ao topo</button>
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn primary" id="modal-link" href="#" target="_blank" rel="noopener noreferrer">Abrir site</a>
+            <button class="modal-close" id="close-modal" type="button">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <button class="chat-fab" id="chat-fab" type="button" aria-label="Abrir chat">AI</button>
+    <section class="chat-widget" id="chat-widget" hidden>
+      <div class="chat-head">
+        <strong>Assistente</strong>
+        <button id="chat-close" type="button">Fechar</button>
+      </div>
+      <div class="chat-log" id="chat-log"></div>
+      <form class="chat-form" id="chat-form">
+        <input id="chat-input" type="text" placeholder="Digite sua pergunta..." maxlength="400" />
+        <button id="chat-send" type="submit">Enviar</button>
+      </form>
+    </section>
+
+    <script>
+      const baseProjects = [
+        {
+          id: "base-1",
+          custom: false,
+          name: "Hosana Brasil",
+          year: "2025",
+          thumbHeight: 420,
+          stack: ["HTML", "CSS", "JavaScript"],
+          type: "Landing Page",
+          description: "Site institucional com foco em comunicacao clara e navegacao orientada a conversao.",
+          image: "./imgs/hosana-brasil.jpg",
+          url: "https://example.com"
+        },
+        {
+          id: "base-2",
+          custom: false,
+          name: "Dashboard Financeiro",
+          year: "2024",
+          thumbHeight: 420,
+          stack: ["React", "TypeScript", "Chart.js"],
+          type: "Dashboard",
+          description: "Painel com indicadores de receita, despesas e performance por periodo.",
+          image: "https://images.unsplash.com/photo-1551281044-8c2f75f3c95d?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        },
+        {
+          id: "base-3",
+          custom: false,
+          name: "Loja de Moda",
+          year: "2024",
+          thumbHeight: 420,
+          stack: ["Next.js", "Tailwind", "Stripe"],
+          type: "E-commerce",
+          description: "Catalogo completo com checkout e jornada de compra simplificada.",
+          image: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        },
+        {
+          id: "base-4",
+          custom: false,
+          name: "Portal Educacional",
+          year: "2023",
+          thumbHeight: 420,
+          stack: ["Vue", "Node", "MongoDB"],
+          type: "Web App",
+          description: "Area do aluno com trilhas, aulas e dashboard de acompanhamento.",
+          image: "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
+          url: "https://example.com"
+        }
+      ];
+
+      const storageKey = "portfolio_custom_projects_v1";
+      const managedKey = "portfolio_projects_managed_v1";
+      const dbName = "portfolio_storage_v2";
+      const dbStore = "kv";
+      let projects = [...baseProjects];
+      let portfolioDbPromise = null;
+
+      const portfolioElement = document.getElementById("portfolio");
+      const modal = document.getElementById("modal");
+      const modalImage = document.getElementById("modal-image");
+      const modalImageWrap = document.getElementById("modal-image-wrap");
+      const modalTitle = document.getElementById("modal-title");
+      const modalDescription = document.getElementById("modal-description");
+      const modalStack = document.getElementById("modal-stack");
+      const modalLink = document.getElementById("modal-link");
+      const closeModal = document.getElementById("close-modal");
+      const toggleAutoscroll = document.getElementById("toggle-autoscroll");
+      const scrollTopButton = document.getElementById("scroll-top");
+      const chatFab = document.getElementById("chat-fab");
+      const chatWidget = document.getElementById("chat-widget");
+      const chatClose = document.getElementById("chat-close");
+      const chatLog = document.getElementById("chat-log");
+      const chatForm = document.getElementById("chat-form");
+      const chatInput = document.getElementById("chat-input");
+      const chatSend = document.getElementById("chat-send");
+      const roleTyping = document.getElementById("role-typing");
+      let autoScrollFrame = null;
+      let autoScrollDirection = 1;
+      let userPausedAutoScroll = false;
+      let hoverPauseEnabled = false;
+      let lenisInstance = null;
+      let cardImageObserver = null;
+      let chatHistory = [];
+      const imagePlaceholder =
+        "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Crect width='1200' height='800' fill='%23111720'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238b96a8' font-size='36' font-family='Arial,sans-serif'%3ESem%20imagem%3C/text%3E%3C/svg%3E";
+
+      function normalizeThumbHeight(value) {
+        const numeric = Number(value);
+        if (!Number.isFinite(numeric)) return 420;
+        return Math.min(900, Math.max(180, numeric));
+      }
+
+      function openPortfolioDb() {
+        if (portfolioDbPromise) return portfolioDbPromise;
+        portfolioDbPromise = new Promise((resolve, reject) => {
+          const request = indexedDB.open(dbName, 1);
+          request.onupgradeneeded = () => {
+            const db = request.result;
+            if (!db.objectStoreNames.contains(dbStore)) {
+              db.createObjectStore(dbStore);
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error("Falha ao abrir banco local"));
+        });
+        return portfolioDbPromise;
+      }
+
+      async function dbGet(key) {
+        const db = await openPortfolioDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(dbStore, "readonly");
+          const store = tx.objectStore(dbStore);
+          const request = store.get(key);
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error || new Error("Falha ao ler banco local"));
+        });
+      }
+
+      async function dbSet(key, value) {
+        const db = await openPortfolioDb();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(dbStore, "readwrite");
+          const store = tx.objectStore(dbStore);
+          const request = store.put(value, key);
+          request.onsuccess = () => resolve(true);
+          request.onerror = () => reject(request.error || new Error("Falha ao salvar no banco local"));
+        });
+      }
+
+      async function migrateLegacyStorage() {
+        const existingProjects = await dbGet(storageKey);
+        const existingManaged = await dbGet(managedKey);
+        const legacyProjects = localStorage.getItem(storageKey);
+        const legacyManaged = localStorage.getItem(managedKey);
+
+        if (existingProjects === undefined && legacyProjects !== null) {
+          await dbSet(storageKey, legacyProjects);
+        }
+        if (existingManaged === undefined && legacyManaged !== null) {
+          await dbSet(managedKey, legacyManaged);
+        }
+      }
+
+      async function loadCustomProjects() {
+        try {
+          const response = await fetch("/api/projects");
+          if (response.ok) {
+            const payload = await response.json();
+            const fromServer = Array.isArray(payload?.projects) ? payload.projects : [];
+            return fromServer.filter((item) =>
+              item &&
+              typeof item.id === "string" &&
+              typeof item.name === "string" &&
+              typeof item.image === "string"
+            ).map((item) => {
+              const { thumbImage, ...rest } = item || {};
+              return {
+                ...rest,
+                image: rest.image || thumbImage || "",
+                coverImage: rest.coverImage || ""
+              };
+            });
+          }
+        } catch {
+          // fallback local
+        }
+
+        try {
+          await migrateLegacyStorage();
+          const raw = await dbGet(storageKey);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+
+          return parsed.filter((item) =>
+            item &&
+            item.custom === true &&
+            typeof item.id === "string" &&
+            typeof item.name === "string" &&
+            typeof item.image === "string"
+          ).map((item) => {
+            const { thumbImage, ...rest } = item || {};
+            return {
+              ...rest,
+              image: rest.image || thumbImage || "",
+              coverImage: rest.coverImage || ""
+            };
+          });
+        } catch (error) {
+          return [];
+        }
+      }
+
+      async function refreshProjects() {
+        const customProjects = await loadCustomProjects();
+        let managedByAdmin = false;
+        try {
+          const response = await fetch("/api/projects");
+          if (response.ok) {
+            const payload = await response.json();
+            managedByAdmin = Boolean(payload?.managed);
+          } else {
+            managedByAdmin = (await dbGet(managedKey)) === "1";
+          }
+        } catch {
+          managedByAdmin = (await dbGet(managedKey)) === "1";
+        }
+        if (managedByAdmin) {
+          projects = [...customProjects];
+          return;
+        }
+        const customIds = new Set(customProjects.map((project) => String(project.id)));
+        const customKeys = new Set(
+          customProjects.map((project) => `${project.name}::${project.url}`.toLowerCase())
+        );
+        const remainingBase = baseProjects.filter(
+          (project) =>
+            !customIds.has(String(project.id)) &&
+            !customKeys.has(`${project.name}::${project.url}`.toLowerCase())
+        );
+        projects = [...customProjects, ...remainingBase];
+      }
+
+      function stopAutoScroll() {
+        if (autoScrollFrame) {
+          cancelAnimationFrame(autoScrollFrame);
+          autoScrollFrame = null;
+        }
+        toggleAutoscroll.textContent = "Iniciar auto scroll";
+      }
+
+      function startAutoScroll() {
+        if (autoScrollFrame) return;
+
+        toggleAutoscroll.textContent = "Pausar auto scroll";
+        const step = () => {
+          const maxTop = modalImageWrap.scrollHeight - modalImageWrap.clientHeight;
+          if (maxTop <= 0) {
+            stopAutoScroll();
+            return;
+          }
+
+          const speed = 1.08;
+          modalImageWrap.scrollTop += autoScrollDirection * speed;
+
+          if (modalImageWrap.scrollTop >= maxTop) {
+            autoScrollDirection = -1;
+          } else if (modalImageWrap.scrollTop <= 0) {
+            autoScrollDirection = 1;
+          }
+
+          autoScrollFrame = requestAnimationFrame(step);
+        };
+
+        autoScrollFrame = requestAnimationFrame(step);
+      }
+
+      function openModal(project) {
+        stopAutoScroll();
+        userPausedAutoScroll = false;
+        hoverPauseEnabled = false;
+        autoScrollDirection = 1;
+        modalImageWrap.scrollTop = 0;
+        modalImage.src = project.image || imagePlaceholder;
+        modalImage.alt = `Preview completo do projeto ${project.name}`;
+        modalTitle.textContent = project.name;
+        modalDescription.textContent = project.description;
+        modalStack.textContent = project.stack.join(" • ");
+        if (project.url) {
+          modalLink.href = project.url;
+          modalLink.classList.remove("disabled-link");
+          modalLink.removeAttribute("aria-disabled");
+        } else {
+          modalLink.href = "#";
+          modalLink.classList.add("disabled-link");
+          modalLink.setAttribute("aria-disabled", "true");
+        }
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+
+        const startWhenReady = () => {
+          setTimeout(() => {
+            if (modal.classList.contains("open") && !userPausedAutoScroll) {
+              startAutoScroll();
+            }
+          }, 3000);
+        };
+
+        if (modalImage.complete) {
+          startWhenReady();
+        } else {
+          modalImage.onload = startWhenReady;
+        }
+
+        setTimeout(() => {
+          if (modal.classList.contains("open")) hoverPauseEnabled = true;
+        }, 700);
+      }
+
+      function closeProjectModal() {
+        userPausedAutoScroll = false;
+        hoverPauseEnabled = false;
+        stopAutoScroll();
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+
+      function ensureCardImageObserver() {
+        if (cardImageObserver || !("IntersectionObserver" in window)) return;
+        cardImageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const image = entry.target;
+            const nextSrc = image.dataset.src || "";
+            if (nextSrc) {
+              image.src = nextSrc;
+              image.removeAttribute("data-src");
+            }
+            observer.unobserve(image);
+          });
+        }, {
+          rootMargin: "220px 0px"
+        });
+      }
+
+      function observeCardImage(image) {
+        const nextSrc = image.dataset.src || "";
+        if (!nextSrc) return;
+        if (!("IntersectionObserver" in window)) {
+          image.src = nextSrc;
+          image.removeAttribute("data-src");
+          return;
+        }
+        ensureCardImageObserver();
+        cardImageObserver.observe(image);
+      }
+
+      function appendChatBubble(role, text) {
+        const bubble = document.createElement("div");
+        bubble.className = `chat-bubble ${role === "user" ? "user" : "bot"}`;
+        bubble.textContent = text;
+        chatLog.appendChild(bubble);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+
+      function openChat() {
+        chatWidget.hidden = false;
+        chatInput.focus();
+        if (!chatLog.childElementCount) {
+          appendChatBubble("bot", "Oi! Posso te ajudar com duvidas sobre os projetos do portfolio.");
+        }
+      }
+
+      function closeChat() {
+        chatWidget.hidden = true;
+      }
+
+      async function sendChatMessage(message) {
+        appendChatBubble("user", message);
+        chatSend.disabled = true;
+        chatInput.disabled = true;
+        appendChatBubble("bot", "Pensando...");
+        let timeoutId = null;
+
+        try {
+          const controller = new AbortController();
+          timeoutId = setTimeout(() => controller.abort(), 20000);
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            signal: controller.signal,
+            body: JSON.stringify({
+              message,
+              history: chatHistory
+            })
+          });
+          clearTimeout(timeoutId);
+          timeoutId = null;
+
+          const contentType = response.headers.get("content-type") || "";
+          const rawBody = await response.text();
+          let data = null;
+          if (contentType.includes("application/json")) {
+            try {
+              data = JSON.parse(rawBody);
+            } catch {
+              data = null;
+            }
+          }
+          if (chatLog.lastElementChild) {
+            chatLog.lastElementChild.remove();
+          }
+
+          if (!response.ok || !data?.reply) {
+            const detail = data?.detail ? `\n${String(data.detail).slice(0, 180)}` : "";
+            const statusHint = response.status === 404
+              ? "Servidor do chat indisponivel. Confirme se esta rodando com npm start."
+              : (data?.error || `Falha no chat (HTTP ${response.status}).`);
+            appendChatBubble("bot", `${statusHint}${detail}`);
+            return;
+          }
+
+          const reply = String(data.reply).trim();
+          appendChatBubble("bot", reply);
+          chatHistory.push({ role: "user", content: message });
+          chatHistory.push({ role: "assistant", content: reply });
+          chatHistory = chatHistory.slice(-10);
+        } catch (error) {
+          if (chatLog.lastElementChild) {
+            chatLog.lastElementChild.remove();
+          }
+          if (String(error?.name || "") === "AbortError") {
+            appendChatBubble("bot", "Timeout na resposta do assistente. Tente novamente.");
+          } else {
+            appendChatBubble("bot", "Erro de conexao com o assistente.");
+          }
+        } finally {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          chatSend.disabled = false;
+          chatInput.disabled = false;
+          chatInput.focus();
+        }
+      }
+
+      function renderProjects() {
+        const source = projects;
+        const filtered = source;
+
+        portfolioElement.innerHTML = "";
+
+        if (!filtered.length) {
+          const empty = document.createElement("article");
+          empty.className = "empty";
+          empty.textContent = "Nenhum projeto encontrado nessa categoria.";
+          portfolioElement.appendChild(empty);
+          return;
+        }
+
+        const shouldAnimateEnter = filtered.length <= 24;
+        const batchSize = 8;
+        let cursor = 0;
+
+        const renderBatch = () => {
+          const end = Math.min(cursor + batchSize, filtered.length);
+          for (; cursor < end; cursor += 1) {
+            const project = filtered[cursor];
+            const index = cursor;
+          const thumbHeight = Number.isFinite(Number(project.thumbHeight))
+            ? Math.min(900, Math.max(180, Number(project.thumbHeight)))
+            : 420;
+          const card = document.createElement("article");
+          card.className = "card";
+          card.dataset.id = project.id;
+          if (shouldAnimateEnter) {
+            card.classList.add("card-pre-enter");
+            card.style.setProperty("--enter-delay", `${Math.min(index * 55, 440)}ms`);
+          }
+          card.innerHTML = `
+            <figure class="card-media" style="--thumb-height: ${thumbHeight}px;">
+              <span class="preview-hover-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M0 8a8 8 0 1 0 16 0A8 8 0 0 0 0 8m5.904 2.803a.5.5 0 1 1-.707-.707L9.293 6H6.525a.5.5 0 1 1 0-1H10.5a.5.5 0 0 1 .5.5v3.975a.5.5 0 0 1-1 0V6.707z"/>
+                </svg>
+              </span>
+              <img src="${imagePlaceholder}" alt="Screenshot completo do site ${project.name}" loading="lazy" decoding="async" fetchpriority="low" />
+              <div class="card-meta">
+                <div class="meta-block">
+                  <h3>${project.name}</h3>
+                  <p>${project.type}</p>
+                </div>
+                <span class="year">${project.year}</span>
+              </div>
+            </figure>
+            <div class="card-footer">
+              <p class="stack">${Array.isArray(project.stack) ? project.stack.join(" • ") : ""}</p>
+              <div class="actions">
+                <button class="btn" data-preview>Ver preview</button>
+              </div>
+            </div>
+          `;
+
+          card.querySelector("[data-preview]").addEventListener("click", () => {
+            openModal(project);
+          });
+          const cardMedia = card.querySelector(".card-media");
+          if (cardMedia) {
+            cardMedia.classList.add("clickable-preview");
+            cardMedia.addEventListener("click", () => {
+              openModal(project);
+            });
+          }
+          const cardImage = card.querySelector(".card-media img");
+          if (cardImage) {
+            cardImage.dataset.src = project.coverImage || project.image || imagePlaceholder;
+            observeCardImage(cardImage);
+          }
+          portfolioElement.appendChild(card);
+          if (shouldAnimateEnter) {
+            requestAnimationFrame(() => {
+              card.classList.add("card-enter-active");
+              card.classList.remove("card-pre-enter");
+            });
+          }
+          }
+          if (cursor < filtered.length) {
+            requestAnimationFrame(renderBatch);
+          }
+        };
+
+        renderBatch();
+      }
+
+      toggleAutoscroll.addEventListener("click", () => {
+        if (autoScrollFrame) {
+          userPausedAutoScroll = true;
+          stopAutoScroll();
+          return;
+        }
+        userPausedAutoScroll = false;
+        startAutoScroll();
+      });
+
+      scrollTopButton.addEventListener("click", () => {
+        modalImageWrap.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      modalImageWrap.addEventListener("mouseenter", () => {
+        if (!hoverPauseEnabled) return;
+        stopAutoScroll();
+      });
+
+      modalImageWrap.addEventListener("mouseleave", () => {
+        if (!modal.classList.contains("open") || userPausedAutoScroll) return;
+        startAutoScroll();
+      });
+
+      closeModal.addEventListener("click", closeProjectModal);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+          closeProjectModal();
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeProjectModal();
+        }
+      });
+
+      chatFab.addEventListener("click", () => {
+        if (chatWidget.hidden) {
+          openChat();
+        } else {
+          closeChat();
+        }
+      });
+
+      chatClose.addEventListener("click", closeChat);
+
+      chatForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const message = String(chatInput.value || "").trim();
+        if (!message) return;
+        chatInput.value = "";
+        await sendChatMessage(message);
+      });
+
+      function initLenisSmoothScroll() {
+        if (lenisInstance) return;
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduceMotion) return;
+        const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
+          || (navigator.deviceMemory && navigator.deviceMemory <= 4)
+          || Boolean(navigator.connection && navigator.connection.saveData);
+        if (lowPowerDevice || projects.length > 18) return;
+        if (typeof window.Lenis !== "function") {
+          const external = document.createElement("script");
+          external.src = "https://unpkg.com/lenis@1.3.11/dist/lenis.min.js";
+          external.onload = () => {
+            initLenisSmoothScroll();
+          };
+          external.onerror = () => {
+            console.warn("Lenis nao carregou; mantendo scroll nativo.");
+          };
+          document.head.appendChild(external);
+          return;
+        }
+
+        lenisInstance = new window.Lenis({
+          duration: 1.1,
+          smoothWheel: true,
+          wheelMultiplier: 0.95,
+          touchMultiplier: 1,
+          syncTouch: false,
+          easing: (t) => 1 - Math.pow(1 - t, 3),
+          prevent: (node) => {
+            if (!(node instanceof Element)) return false;
+            return Boolean(node.closest("#modal-image-wrap, textarea, select"));
+          }
+        });
+
+        const raf = (time) => {
+          if (!lenisInstance) return;
+          lenisInstance.raf(time);
+          requestAnimationFrame(raf);
+        };
+        requestAnimationFrame(raf);
+      }
+
+      function initRoleTyping() {
+        if (!roleTyping) return;
+        const roles = ["DESIGNER", "WEB DESIGNER", "DEV LOW CODE"];
+        let roleIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        const tick = () => {
+          const current = roles[roleIndex];
+          if (!deleting) {
+            charIndex += 1;
+            roleTyping.textContent = current.slice(0, charIndex);
+            if (charIndex >= current.length) {
+              deleting = true;
+              setTimeout(tick, 900);
+              return;
+            }
+            setTimeout(tick, 80);
+            return;
+          }
+
+          charIndex -= 1;
+          roleTyping.textContent = current.slice(0, Math.max(0, charIndex));
+          if (charIndex <= 0) {
+            deleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            setTimeout(tick, 180);
+            return;
+          }
+          setTimeout(tick, 42);
+        };
+
+        tick();
+      }
+
+      async function initPortfolio() {
+        await refreshProjects();
+        renderProjects();
+        initLenisSmoothScroll();
+        initRoleTyping();
+      }
+
+      initPortfolio();
+    </script>
+  </body>
+</html>

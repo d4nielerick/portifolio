@@ -1,0 +1,60 @@
+{
+  "profile": {
+    "name": "Daniel",
+    "specialty": "Desenvolvimento e design de sites",
+    "bio": "Profissional focado em sites modernos com boa experiencia visual, performance e conversao.",
+    "contact": "Use o formulario de contato do site ou solicite um briefing."
+  },
+  "faqs": [
+    {
+      "question": "Quais tipos de projeto voce faz?",
+      "answer": "Landing pages, dashboards, e-commerce e web apps."
+    },
+    {
+      "question": "Voce trabalha com quais stacks?",
+      "answer": "HTML, CSS, JavaScript, React, Next.js, TypeScript, Vue, Node e integracoes."
+    },
+    {
+      "question": "Como funciona o orcamento?",
+      "answer": "Depende do escopo. O ideal e fazer um briefing rapido para fechar prazo e valor."
+    }
+  ],
+  "projects": [
+    {
+      "id": "base-1",
+      "name": "Hosana Brasil",
+      "type": "Landing Page",
+      "year": "2025",
+      "stack": ["HTML", "CSS", "JavaScript"],
+      "description": "Site institucional com foco em comunicacao clara e navegacao orientada a conversao.",
+      "url": ""
+    },
+    {
+      "id": "base-2",
+      "name": "Dashboard Financeiro",
+      "type": "Dashboard",
+      "year": "2024",
+      "stack": ["React", "TypeScript", "Chart.js"],
+      "description": "Painel com indicadores de receita, despesas e performance por periodo.",
+      "url": ""
+    },
+    {
+      "id": "base-3",
+      "name": "Loja de Moda",
+      "type": "E-commerce",
+      "year": "2024",
+      "stack": ["Next.js", "Tailwind", "Stripe"],
+      "description": "Catalogo completo com checkout e jornada de compra simplificada.",
+      "url": ""
+    },
+    {
+      "id": "base-4",
+      "name": "Portal Educacional",
+      "type": "Web App",
+      "year": "2023",
+      "stack": ["Vue", "Node", "MongoDB"],
+      "description": "Area do aluno com trilhas, aulas e dashboard de acompanhamento.",
+      "url": ""
+    }
+  ]
+}
