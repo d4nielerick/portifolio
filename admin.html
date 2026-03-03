@@ -552,8 +552,13 @@
           if (response.ok) {
             return true;
           }
+          const payload = await response.json().catch(() => ({}));
+          const detail = payload?.detail ? `\n${String(payload.detail).slice(0, 220)}` : "";
+          setStatus("erro ao salvar no servidor");
+          alert((payload?.error || "Falha ao salvar no servidor.") + detail);
+          return false;
         } catch {
-          // fallback local
+          // fallback local (somente erro de rede/ambiente sem backend)
         }
 
         try {
