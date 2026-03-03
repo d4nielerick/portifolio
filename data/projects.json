@@ -14,8 +14,8 @@
       ],
       "type": "Landing Page",
       "description": "Site institucional com foco em comunicacao clara e navegacao orientada a conversao.",
-      "image": "./imgs/hosana-brasil.jpg",
-      "coverImage": "./imgs/hosana-brasil.jpg",
+      "image": "/imgs/hosana-brasil.jpg",
+      "coverImage": "/imgs/hosana-brasil.jpg",
       "url": "https://example.com"
     },
     {
