@@ -1,4 +1,5 @@
 node_modules/
 .env
 logs/
+.vercel/
 .DS_Store
