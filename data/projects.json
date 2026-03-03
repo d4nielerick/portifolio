@@ -1,4 +1,73 @@
 {
-  "managed": false,
-  "projects": []
+  "managed": true,
+  "projects": [
+    {
+      "id": "base-1",
+      "custom": false,
+      "name": "Hosana Brasil",
+      "year": "2025",
+      "thumbHeight": 420,
+      "stack": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ],
+      "type": "Landing Page",
+      "description": "Site institucional com foco em comunicacao clara e navegacao orientada a conversao.",
+      "image": "./imgs/hosana-brasil.jpg",
+      "coverImage": "./imgs/hosana-brasil.jpg",
+      "url": "https://example.com"
+    },
+    {
+      "id": "base-2",
+      "custom": false,
+      "name": "Dashboard Financeiro",
+      "year": "2024",
+      "thumbHeight": 420,
+      "stack": [
+        "React",
+        "TypeScript",
+        "Chart.js"
+      ],
+      "type": "Dashboard",
+      "description": "Painel com indicadores de receita, despesas e performance por periodo.",
+      "image": "https://images.unsplash.com/photo-1551281044-8c2f75f3c95d?auto=format&fit=crop&w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1551281044-8c2f75f3c95d?auto=format&fit=crop&w=1200&q=80",
+      "url": "https://example.com"
+    },
+    {
+      "id": "base-3",
+      "custom": false,
+      "name": "Loja de Moda",
+      "year": "2024",
+      "thumbHeight": 420,
+      "stack": [
+        "Next.js",
+        "Tailwind",
+        "Stripe"
+      ],
+      "type": "E-commerce",
+      "description": "Catalogo completo com checkout e jornada de compra simplificada.",
+      "image": "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&w=1200&q=80",
+      "url": "https://example.com"
+    },
+    {
+      "id": "base-4",
+      "custom": false,
+      "name": "Portal Educacional",
+      "year": "2023",
+      "thumbHeight": 420,
+      "stack": [
+        "Vue",
+        "Node",
+        "MongoDB"
+      ],
+      "type": "Web App",
+      "description": "Area do aluno com trilhas, aulas e dashboard de acompanhamento.",
+      "image": "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
+      "coverImage": "https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1200&q=80",
+      "url": "https://example.com"
+    }
+  ]
 }
