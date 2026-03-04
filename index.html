@@ -263,7 +263,7 @@
         display: grid;
         grid-template-columns: 1fr minmax(280px, 360px) 1fr;
         gap: 26px;
-        align-items: start;
+        align-items: stretch;
       }
 
       .about-left h3 {
@@ -331,21 +331,10 @@
       }
 
       .about-right {
-        display: grid;
-        gap: 22px;
-      }
-
-      .about-mini-card {
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        overflow: hidden;
-        width: min(220px, 100%);
-        background: #131923;
-      }
-
-      .about-mini-card img {
-        width: 100%;
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: 100%;
       }
 
       .about-points {
@@ -953,10 +942,6 @@
           </article>
 
           <article class="about-right">
-            <div class="about-mini-card">
-              <img src="/imgs/profile-photo.webp?v=20260303" alt="" loading="lazy" />
-            </div>
-
             <div class="about-points">
               <div class="about-point">
                 <span class="about-point-dot" aria-hidden="true">
