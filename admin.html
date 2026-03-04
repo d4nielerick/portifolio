@@ -909,8 +909,10 @@
 
           if (file) {
             setStatus("upload de imagem em andamento");
-            image = await readFileAsDataUrl(file);
-            coverImage = await buildCoverImageFromSource(image);
+            const originalImage = await readFileAsDataUrl(file);
+            coverImage = await buildCoverImageFromSource(originalImage);
+            // Keep payload small enough for API/Supabase by storing optimized data URL.
+            image = coverImage;
           } else if (hasImageUrlInput) {
             image = imageUrlInput;
             coverImage = currentEditingProject ? (currentEditingProject.coverImage || imageUrlInput) : imageUrlInput;

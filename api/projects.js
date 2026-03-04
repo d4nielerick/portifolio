@@ -30,6 +30,12 @@ module.exports = async function handler(req, res) {
     }
 
     const body = await readJson(req);
+    if (body?.__payloadTooLarge) {
+      return sendJson(res, 413, {
+        error: "Payload muito grande para salvar projetos. Reduza o tamanho das imagens."
+      });
+    }
+
     const incoming = Array.isArray(body?.projects) ? body.projects : null;
     if (!incoming) {
       return sendJson(res, 400, { error: "Payload invalido. Envie { projects: [] }" });
