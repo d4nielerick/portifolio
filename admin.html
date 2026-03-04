@@ -914,10 +914,6 @@
           } else if (hasImageUrlInput) {
             image = imageUrlInput;
             coverImage = currentEditingProject ? (currentEditingProject.coverImage || imageUrlInput) : imageUrlInput;
-          } else if (currentEditingProject) {
-            // Campo vazio em edicao remove imagem anterior.
-            image = "";
-            coverImage = "";
           }
 
           const project = {
