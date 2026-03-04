@@ -182,11 +182,17 @@
               <label>URL do site
                 <input id="project-url" type="url" />
               </label>
-              <label>Imagem por URL (opcional)
+              <label>Imagem completa por URL (opcional)
                 <input id="project-image-url" type="url" />
               </label>
-              <label>Ou upload da imagem (opcional)
+              <label>Ou upload da imagem completa (opcional)
                 <input id="project-image-file" type="file" accept="image/*" />
+              </label>
+              <label>Thumb por URL (max 400x600) (opcional)
+                <input id="project-thumb-url" type="url" />
+              </label>
+              <label>Ou upload da thumb (max 400x600) (opcional)
+                <input id="project-thumb-file" type="file" accept="image/*" />
               </label>
             </div>
             <div class="actions">
@@ -320,6 +326,8 @@
       const projectUrl = document.getElementById("project-url");
       const projectImageUrl = document.getElementById("project-image-url");
       const projectImageFile = document.getElementById("project-image-file");
+      const projectThumbUrl = document.getElementById("project-thumb-url");
+      const projectThumbFile = document.getElementById("project-thumb-file");
       let editingProjectId = null;
       let liveDraftProjects = [];
       let draggingProjectId = null;
@@ -398,64 +406,11 @@
         });
       }
 
-      async function buildCoverImageFromSource(source) {
+      async function assertThumbMaxSize(source) {
         const image = await loadImageFromSource(source);
-        const targetWidth = 400;
-        const targetHeight = 700;
-        const targetRatio = targetWidth / targetHeight;
-        const sourceRatio = image.width / image.height;
-
-        let cropWidth = image.width;
-        let cropHeight = image.height;
-        if (sourceRatio > targetRatio) {
-          cropWidth = Math.max(1, Math.round(image.height * targetRatio));
-          cropHeight = image.height;
-        } else {
-          cropWidth = image.width;
-          cropHeight = Math.max(1, Math.round(image.width / targetRatio));
+        if (image.width > 400 || image.height > 600) {
+          throw new Error("Thumb deve ter no maximo 400x600px.");
         }
-
-        const sx = Math.max(0, Math.round((image.width - cropWidth) / 2));
-        const sy = 0;
-        const canvas = document.createElement("canvas");
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const context = canvas.getContext("2d");
-        if (!context) return source;
-        context.imageSmoothingEnabled = true;
-        context.imageSmoothingQuality = "high";
-        context.drawImage(
-          image,
-          sx,
-          sy,
-          cropWidth,
-          Math.min(cropHeight, image.height),
-          0,
-          0,
-          targetWidth,
-          targetHeight
-        );
-        return canvas.toDataURL("image/jpeg", 0.96);
-      }
-
-      async function buildFullImageFromSource(source) {
-        const image = await loadImageFromSource(source);
-        const maxSide = 1800;
-        const longestSide = Math.max(image.width, image.height);
-        const scale = longestSide > maxSide ? (maxSide / longestSide) : 1;
-        const targetWidth = Math.max(1, Math.round(image.width * scale));
-        const targetHeight = Math.max(1, Math.round(image.height * scale));
-
-        const canvas = document.createElement("canvas");
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const context = canvas.getContext("2d");
-        if (!context) return source;
-
-        context.imageSmoothingEnabled = true;
-        context.imageSmoothingQuality = "high";
-        context.drawImage(image, 0, 0, targetWidth, targetHeight);
-        return canvas.toDataURL("image/jpeg", 0.94);
       }
 
       function openPortfolioDb() {
@@ -766,7 +721,12 @@
           project.image && !String(project.image).startsWith("data:")
             ? project.image
             : "";
+        projectThumbUrl.value =
+          project.coverImage && !String(project.coverImage).startsWith("data:")
+            ? project.coverImage
+            : "";
         projectImageFile.value = "";
+        projectThumbFile.value = "";
         submitProjectButton.textContent = "Atualizar projeto";
         cancelEditButton.hidden = false;
       }
@@ -920,21 +880,33 @@
             : null;
 
           const imageUrlInput = projectImageUrl.value.trim();
+          const thumbUrlInput = projectThumbUrl.value.trim();
           const hasImageUrlInput = imageUrlInput.length > 0;
-          const file = projectImageFile.files && projectImageFile.files[0];
+          const hasThumbUrlInput = thumbUrlInput.length > 0;
+          const fullImageFile = projectImageFile.files && projectImageFile.files[0];
+          const thumbFile = projectThumbFile.files && projectThumbFile.files[0];
           let image = currentEditingProject ? (currentEditingProject.image || "") : "";
           let coverImage = currentEditingProject
             ? (currentEditingProject.coverImage || currentEditingProject.image || "")
             : "";
 
-          if (file) {
-            setStatus("upload de imagem em andamento");
-            const originalImage = await readFileAsDataUrl(file);
-            coverImage = await buildCoverImageFromSource(originalImage);
-            image = await buildFullImageFromSource(originalImage);
+          if (fullImageFile) {
+            setStatus("upload da imagem completa em andamento");
+            image = await readFileAsDataUrl(fullImageFile);
           } else if (hasImageUrlInput) {
             image = imageUrlInput;
-            coverImage = currentEditingProject ? (currentEditingProject.coverImage || imageUrlInput) : imageUrlInput;
+          }
+
+          if (thumbFile) {
+            setStatus("upload da thumb em andamento");
+            const thumbDataUrl = await readFileAsDataUrl(thumbFile);
+            await assertThumbMaxSize(thumbDataUrl);
+            coverImage = thumbDataUrl;
+          } else if (hasThumbUrlInput) {
+            await assertThumbMaxSize(thumbUrlInput);
+            coverImage = thumbUrlInput;
+          } else if (!currentEditingProject && image) {
+            coverImage = image;
           }
 
           const project = {
