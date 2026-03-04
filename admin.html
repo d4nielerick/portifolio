@@ -182,16 +182,10 @@
               <label>URL do site
                 <input id="project-url" type="url" />
               </label>
-              <label>Imagem completa por URL (opcional)
-                <input id="project-image-url" type="url" />
-              </label>
-              <label>Ou upload da imagem completa (opcional)
+              <label>Upload da imagem completa (opcional)
                 <input id="project-image-file" type="file" accept="image/*" />
               </label>
-              <label>Thumb por URL (max 400x600) (opcional)
-                <input id="project-thumb-url" type="url" />
-              </label>
-              <label>Ou upload da thumb (max 400x600) (opcional)
+              <label>Upload da thumb (max 400x600) (opcional)
                 <input id="project-thumb-file" type="file" accept="image/*" />
               </label>
             </div>
@@ -324,9 +318,7 @@
       const projectStack = document.getElementById("project-stack");
       const projectDescription = document.getElementById("project-description");
       const projectUrl = document.getElementById("project-url");
-      const projectImageUrl = document.getElementById("project-image-url");
       const projectImageFile = document.getElementById("project-image-file");
-      const projectThumbUrl = document.getElementById("project-thumb-url");
       const projectThumbFile = document.getElementById("project-thumb-file");
       let editingProjectId = null;
       let liveDraftProjects = [];
@@ -741,14 +733,6 @@
         projectStack.value = Array.isArray(project.stack) ? project.stack.join(", ") : "";
         projectDescription.value = project.description || "";
         projectUrl.value = project.url || "";
-        projectImageUrl.value =
-          project.image && !String(project.image).startsWith("data:")
-            ? project.image
-            : "";
-        projectThumbUrl.value =
-          project.coverImage && !String(project.coverImage).startsWith("data:")
-            ? project.coverImage
-            : "";
         projectImageFile.value = "";
         projectThumbFile.value = "";
         submitProjectButton.textContent = "Atualizar projeto";
@@ -903,10 +887,6 @@
             ? projects.find((entry) => entry.id === editingProjectId)
             : null;
 
-          const imageUrlInput = projectImageUrl.value.trim();
-          const thumbUrlInput = projectThumbUrl.value.trim();
-          const hasImageUrlInput = imageUrlInput.length > 0;
-          const hasThumbUrlInput = thumbUrlInput.length > 0;
           const fullImageFile = projectImageFile.files && projectImageFile.files[0];
           const thumbFile = projectThumbFile.files && projectThumbFile.files[0];
 
@@ -921,8 +901,6 @@
           if (fullImageFile) {
             setStatus("upload da imagem completa em andamento");
             image = await readFileAsDataUrl(fullImageFile);
-          } else if (hasImageUrlInput) {
-            image = imageUrlInput;
           }
 
           if (thumbFile) {
@@ -930,9 +908,6 @@
             const thumbDataUrl = await readFileAsDataUrl(thumbFile);
             await assertThumbMaxSize(thumbDataUrl);
             coverImage = thumbDataUrl;
-          } else if (hasThumbUrlInput) {
-            await assertThumbMaxSize(thumbUrlInput);
-            coverImage = thumbUrlInput;
           } else if (!currentEditingProject && image) {
             coverImage = image;
           }
