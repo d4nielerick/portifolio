@@ -438,6 +438,26 @@
         return canvas.toDataURL("image/jpeg", 0.96);
       }
 
+      async function buildFullImageFromSource(source) {
+        const image = await loadImageFromSource(source);
+        const maxSide = 1800;
+        const longestSide = Math.max(image.width, image.height);
+        const scale = longestSide > maxSide ? (maxSide / longestSide) : 1;
+        const targetWidth = Math.max(1, Math.round(image.width * scale));
+        const targetHeight = Math.max(1, Math.round(image.height * scale));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const context = canvas.getContext("2d");
+        if (!context) return source;
+
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = "high";
+        context.drawImage(image, 0, 0, targetWidth, targetHeight);
+        return canvas.toDataURL("image/jpeg", 0.94);
+      }
+
       function openPortfolioDb() {
         if (portfolioDbPromise) return portfolioDbPromise;
         portfolioDbPromise = new Promise((resolve, reject) => {
@@ -911,8 +931,7 @@
             setStatus("upload de imagem em andamento");
             const originalImage = await readFileAsDataUrl(file);
             coverImage = await buildCoverImageFromSource(originalImage);
-            // Keep payload small enough for API/Supabase by storing optimized data URL.
-            image = coverImage;
+            image = await buildFullImageFromSource(originalImage);
           } else if (hasImageUrlInput) {
             image = imageUrlInput;
             coverImage = currentEditingProject ? (currentEditingProject.coverImage || imageUrlInput) : imageUrlInput;
