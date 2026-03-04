@@ -42,7 +42,28 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      const saved = await saveProjectsStore(incoming);
+      const existingStore = await getProjectsStore();
+      const existingById = new Map(
+        (existingStore?.projects || [])
+          .filter((project) => project && project.id)
+          .map((project) => [String(project.id), project])
+      );
+
+      const mergedProjects = incoming.map((project) => {
+        const id = String(project?.id || "");
+        const previous = existingById.get(id);
+        const incomingImage = String(project?.image || "");
+        const incomingCover = String(project?.coverImage || "");
+        return {
+          ...project,
+          image: incomingImage || String(previous?.image || ""),
+          coverImage:
+            incomingCover ||
+            String(previous?.coverImage || previous?.image || incomingImage || "")
+        };
+      });
+
+      const saved = await saveProjectsStore(mergedProjects);
       return sendJson(res, 200, { ok: true, managed: saved.managed, count: saved.count });
     } catch (error) {
       return sendJson(res, 500, {

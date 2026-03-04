@@ -504,6 +504,25 @@
       }
 
       async function saveProjects(projects) {
+        const current = await loadProjects();
+        const currentById = new Map(
+          current
+            .filter((project) => project && project.id)
+            .map((project) => [String(project.id), project])
+        );
+
+        // Avoid sending large unchanged base64 blobs on every save.
+        const payloadProjects = projects.map((project) => {
+          const previous = currentById.get(String(project?.id || ""));
+          const sameImage = previous && String(previous.image || "") === String(project?.image || "");
+          const sameCover = previous && String(previous.coverImage || "") === String(project?.coverImage || "");
+          return {
+            ...project,
+            image: sameImage ? "" : String(project?.image || ""),
+            coverImage: sameCover ? "" : String(project?.coverImage || "")
+          };
+        });
+
         const authToken = getAdminToken();
         try {
           const response = await fetch("/api/projects", {
@@ -512,7 +531,7 @@
               "Content-Type": "application/json",
               ...(authToken ? { Authorization: `Bearer ${authToken}` } : {})
             },
-            body: JSON.stringify({ projects })
+            body: JSON.stringify({ projects: payloadProjects })
           });
 
           if (response.status === 401) {
@@ -531,7 +550,7 @@
           if (response.status === 413) {
             setStatus("payload muito grande");
             alert(
-              "Upload muito grande para o servidor. Use arquivo menor ou URL da imagem completa."
+              "Upload muito grande para o servidor. Use arquivo menor na imagem completa."
             );
             return false;
           }
