@@ -359,6 +359,14 @@
         return Math.min(900, Math.max(180, numeric));
       }
 
+      function ensureFileSize(file, maxBytes, label) {
+        if (!file) return;
+        if (file.size > maxBytes) {
+          const maxMb = (maxBytes / (1024 * 1024)).toFixed(1);
+          throw new Error(`${label} muito grande. Limite: ${maxMb}MB.`);
+        }
+      }
+
       function normalizeImportedProjects(input) {
         const source = Array.isArray(input)
           ? input
@@ -527,6 +535,22 @@
           if (response.ok) {
             return true;
           }
+
+          if (response.status === 413) {
+            setStatus("payload muito grande");
+            alert(
+              "Upload muito grande para o servidor. Use arquivo menor ou URL da imagem completa."
+            );
+            return false;
+          }
+
+          const rawText = await response.text().catch(() => "");
+          if (rawText && !response.headers.get("content-type")?.includes("application/json")) {
+            setStatus("erro ao salvar no servidor");
+            alert(`Falha ao salvar no servidor (HTTP ${response.status}).`);
+            return false;
+          }
+
           const payload = await response.json().catch(() => ({}));
           const detail = payload?.detail ? `\n${String(payload.detail).slice(0, 220)}` : "";
           setStatus("erro ao salvar no servidor");
@@ -885,6 +909,10 @@
           const hasThumbUrlInput = thumbUrlInput.length > 0;
           const fullImageFile = projectImageFile.files && projectImageFile.files[0];
           const thumbFile = projectThumbFile.files && projectThumbFile.files[0];
+
+          ensureFileSize(fullImageFile, 3.5 * 1024 * 1024, "Imagem completa");
+          ensureFileSize(thumbFile, 1.5 * 1024 * 1024, "Thumb");
+
           let image = currentEditingProject ? (currentEditingProject.image || "") : "";
           let coverImage = currentEditingProject
             ? (currentEditingProject.coverImage || currentEditingProject.image || "")
