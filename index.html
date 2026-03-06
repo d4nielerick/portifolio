@@ -1093,6 +1093,7 @@
       let lenisInstance = null;
       let cardImageObserver = null;
       let chatHistory = [];
+      const projectDetailsCache = new Map();
       const imagePlaceholder =
         "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Crect width='1200' height='800' fill='%23111720'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238b96a8' font-size='36' font-family='Arial,sans-serif'%3ESem%20imagem%3C/text%3E%3C/svg%3E";
 
@@ -1156,15 +1157,15 @@
 
       async function loadCustomProjects() {
         try {
-          const response = await fetch("/api/projects");
+          const response = await fetch("/api/projects?view=cards");
           if (response.ok) {
             const payload = await response.json();
             const fromServer = Array.isArray(payload?.projects) ? payload.projects : [];
-            return fromServer.filter((item) =>
+            const projectsFromServer = fromServer.filter((item) =>
               item &&
               typeof item.id === "string" &&
               typeof item.name === "string" &&
-              typeof item.image === "string"
+              typeof item.coverImage === "string"
             ).map((item) => {
               const { thumbImage, ...rest } = item || {};
               return {
@@ -1173,6 +1174,10 @@
                 coverImage: rest.coverImage || ""
               };
             });
+            return {
+              managedByAdmin: Boolean(payload?.managed),
+              projects: projectsFromServer
+            };
           }
         } catch {
           // fallback local
@@ -1181,11 +1186,11 @@
         try {
           await migrateLegacyStorage();
           const raw = await dbGet(storageKey);
-          if (!raw) return [];
+          if (!raw) return { managedByAdmin: false, projects: [] };
           const parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed)) return [];
+          if (!Array.isArray(parsed)) return { managedByAdmin: false, projects: [] };
 
-          return parsed.filter((item) =>
+          const localProjects = parsed.filter((item) =>
             item &&
             item.custom === true &&
             typeof item.id === "string" &&
@@ -1199,25 +1204,19 @@
               coverImage: rest.coverImage || ""
             };
           });
+          return {
+            managedByAdmin: (await dbGet(managedKey)) === "1",
+            projects: localProjects
+          };
         } catch (error) {
-          return [];
+          return { managedByAdmin: false, projects: [] };
         }
       }
 
       async function refreshProjects() {
-        const customProjects = await loadCustomProjects();
-        let managedByAdmin = false;
-        try {
-          const response = await fetch("/api/projects");
-          if (response.ok) {
-            const payload = await response.json();
-            managedByAdmin = Boolean(payload?.managed);
-          } else {
-            managedByAdmin = (await dbGet(managedKey)) === "1";
-          }
-        } catch {
-          managedByAdmin = (await dbGet(managedKey)) === "1";
-        }
+        const loaded = await loadCustomProjects();
+        const customProjects = Array.isArray(loaded?.projects) ? loaded.projects : [];
+        const managedByAdmin = Boolean(loaded?.managedByAdmin);
         if (managedByAdmin) {
           projects = [...customProjects];
           return;
@@ -1268,7 +1267,26 @@
         autoScrollFrame = requestAnimationFrame(step);
       }
 
-      function openModal(project) {
+      async function fetchProjectDetailsById(projectId) {
+        if (!projectId) return null;
+        if (projectDetailsCache.has(projectId)) {
+          return projectDetailsCache.get(projectId);
+        }
+        try {
+          const response = await fetch(`/api/project?id=${encodeURIComponent(projectId)}`);
+          if (!response.ok) return null;
+          const payload = await response.json();
+          const project = payload?.project || null;
+          if (project) {
+            projectDetailsCache.set(projectId, project);
+          }
+          return project;
+        } catch {
+          return null;
+        }
+      }
+
+      async function openModal(project) {
         stopAutoScroll();
         userPausedAutoScroll = false;
         hoverPauseEnabled = false;
@@ -1290,6 +1308,14 @@
         }
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
+
+        if (!project.image && project.id) {
+          const fullProject = await fetchProjectDetailsById(project.id);
+          const fullImage = fullProject?.image || fullProject?.coverImage || "";
+          if (modal.classList.contains("open") && fullImage) {
+            modalImage.src = fullImage;
+          }
+        }
 
         const startWhenReady = () => {
           setTimeout(() => {

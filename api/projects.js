@@ -8,6 +8,17 @@ module.exports = async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const store = await getProjectsStore();
+      const view = String(req.query?.view || "");
+      if (view === "cards") {
+        const cardProjects = (store?.projects || []).map((project) => ({
+          ...project,
+          image: ""
+        }));
+        return sendJson(res, 200, {
+          managed: Boolean(store?.managed),
+          projects: cardProjects
+        });
+      }
       return sendJson(res, 200, store);
     } catch (error) {
       return sendJson(res, 500, {
