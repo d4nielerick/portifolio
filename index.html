@@ -593,6 +593,33 @@
         height: 100%;
         overflow: auto;
         background: #0d1014;
+        position: relative;
+      }
+
+      .modal-image-wrap.loading::before {
+        content: "";
+        position: absolute;
+        inset: 50% auto auto 50%;
+        width: 46px;
+        height: 46px;
+        margin: -23px 0 0 -23px;
+        border-radius: 999px;
+        border: 3px solid rgba(132, 255, 216, 0.18);
+        border-top-color: var(--accent);
+        animation: spin 0.85s linear infinite;
+        z-index: 2;
+      }
+
+      .modal-image-wrap.loading::after {
+        content: "Carregando preview";
+        position: absolute;
+        left: 50%;
+        top: calc(50% + 38px);
+        transform: translateX(-50%);
+        color: #a4b0bf;
+        font-size: 0.92rem;
+        letter-spacing: 0.02em;
+        z-index: 2;
       }
 
       .modal-image-wrap img {
@@ -804,6 +831,12 @@
         }
       }
 
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         .card-pre-enter,
         .card-enter-active {
@@ -934,7 +967,6 @@
                 <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 2a8 8 0 0 1 7.94 7H16l-4-5-4 5H4.06A8 8 0 0 1 12 4m0 16a8 8 0 0 1-7.94-7H8l4 5 4-5h3.94A8 8 0 0 1 12 20"/>
               </svg>
             </span>
-            <strong>120%</strong>
             <p class="about-kpi-text">
               Não faço embalagem bonita em cima de algo vazio. Faço o oposto: pego o que você já tem de real e construo uma presença digital à altura disso.
             </p>
@@ -952,7 +984,7 @@
                   </svg>
                 </span>
                 <p>
-                  Cada site entregue como uma obra acabada — nada deixado pela metade.
+                  15 anos de mercado. O mesmo compromisso desde o primeiro projeto.
                 </p>
               </div>
               <div class="about-point">
@@ -1294,6 +1326,7 @@
         hoverPauseEnabled = false;
         autoScrollDirection = 1;
         modalImageWrap.scrollTop = 0;
+        modalImageWrap.classList.add("loading");
         modalImage.src = project.image || imagePlaceholder;
         modalImage.alt = `Preview completo do projeto ${project.name}`;
         modalTitle.textContent = project.name;
@@ -1316,10 +1349,13 @@
           const fullImage = fullProject?.image || fullProject?.coverImage || "";
           if (modal.classList.contains("open") && fullImage) {
             modalImage.src = fullImage;
+          } else {
+            modalImageWrap.classList.remove("loading");
           }
         }
 
         const startWhenReady = () => {
+          modalImageWrap.classList.remove("loading");
           setTimeout(() => {
             if (modal.classList.contains("open") && !userPausedAutoScroll) {
               startAutoScroll();
@@ -1342,6 +1378,7 @@
         userPausedAutoScroll = false;
         hoverPauseEnabled = false;
         stopAutoScroll();
+        modalImageWrap.classList.remove("loading");
         modal.classList.remove("open");
         modal.setAttribute("aria-hidden", "true");
       }
