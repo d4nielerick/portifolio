@@ -371,7 +371,7 @@
       .about-point p {
         margin: 0;
         color: #a4b0bf;
-        line-height: 1.45;
+        line-height: 1.5;
         font-size: 1.04rem;
       }
 
@@ -627,6 +627,35 @@
         display: block;
       }
 
+      .modal-nav {
+        position: absolute;
+        top: 18px;
+        z-index: 3;
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid rgba(132, 255, 216, 0.22);
+        background: rgba(10, 14, 20, 0.72);
+        color: #e7eef8;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+      }
+
+      .modal-nav.prev {
+        left: 18px;
+      }
+
+      .modal-nav.next {
+        right: 18px;
+      }
+
+      .modal-nav[disabled] {
+        opacity: 0.38;
+        cursor: default;
+      }
+
       .modal-info {
         border-left: 1px solid var(--line);
         padding: 16px;
@@ -870,6 +899,10 @@
           grid-template-columns: 1fr;
         }
 
+        .modal-nav {
+          top: 12px;
+        }
+
         .modal-info {
           border-left: 0;
           border-top: 1px solid var(--line);
@@ -1007,6 +1040,8 @@
     <aside class="modal" id="modal" aria-hidden="true">
       <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Visualizacao do projeto">
         <div class="modal-image-wrap" id="modal-image-wrap">
+          <button class="modal-nav prev" id="modal-prev" type="button" aria-label="Projeto anterior">‹</button>
+          <button class="modal-nav next" id="modal-next" type="button" aria-label="Próximo projeto">›</button>
           <img id="modal-image" src="" alt="Preview ampliado do projeto" />
         </div>
         <div class="modal-info">
@@ -1105,6 +1140,8 @@
       const modal = document.getElementById("modal");
       const modalImage = document.getElementById("modal-image");
       const modalImageWrap = document.getElementById("modal-image-wrap");
+      const modalPrev = document.getElementById("modal-prev");
+      const modalNext = document.getElementById("modal-next");
       const modalTitle = document.getElementById("modal-title");
       const modalDescription = document.getElementById("modal-description");
       const modalStack = document.getElementById("modal-stack");
@@ -1124,12 +1161,13 @@
       let autoScrollDirection = 1;
       let userPausedAutoScroll = false;
       let hoverPauseEnabled = false;
+      let currentModalProjectIndex = -1;
       let lenisInstance = null;
       let cardImageObserver = null;
       let chatHistory = [];
       const projectDetailsCache = new Map();
       const imagePlaceholder =
-        "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Crect width='1200' height='800' fill='%23111720'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%238b96a8' font-size='36' font-family='Arial,sans-serif'%3ESem%20imagem%3C/text%3E%3C/svg%3E";
+        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
       function normalizeThumbHeight(value) {
         const numeric = Number(value);
@@ -1320,14 +1358,35 @@
         }
       }
 
-      async function openModal(project) {
+      function syncModalNavButtons() {
+        const total = projects.length;
+        const hasPrevious = currentModalProjectIndex > 0;
+        const hasNext = currentModalProjectIndex >= 0 && currentModalProjectIndex < total - 1;
+        modalPrev.disabled = !hasPrevious;
+        modalNext.disabled = !hasNext;
+      }
+
+      async function openProjectAtIndex(index) {
+        if (index < 0 || index >= projects.length) return;
+        currentModalProjectIndex = index;
+        await openModal(projects[index], index);
+      }
+
+      async function openModal(project, index = -1) {
+        if (index >= 0) {
+          currentModalProjectIndex = index;
+        } else {
+          currentModalProjectIndex = projects.findIndex((item) => item.id === project.id);
+        }
+        syncModalNavButtons();
         stopAutoScroll();
         userPausedAutoScroll = false;
         hoverPauseEnabled = false;
         autoScrollDirection = 1;
-        modalImageWrap.scrollTop = 0;
+        modalImage.onload = null;
+        modalImage.src = imagePlaceholder;
+        modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
         modalImageWrap.classList.add("loading");
-        modalImage.src = project.image || imagePlaceholder;
         modalImage.alt = `Preview completo do projeto ${project.name}`;
         modalTitle.textContent = project.name;
         modalDescription.textContent = project.description;
@@ -1344,6 +1403,18 @@
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
 
+        const startWhenReady = () => {
+          modalImageWrap.classList.remove("loading");
+          modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
+          setTimeout(() => {
+            if (modal.classList.contains("open") && !userPausedAutoScroll) {
+              startAutoScroll();
+            }
+          }, 3000);
+        };
+
+        modalImage.onload = startWhenReady;
+
         if (!project.image && project.id) {
           const fullProject = await fetchProjectDetailsById(project.id);
           const fullImage = fullProject?.image || fullProject?.coverImage || "";
@@ -1352,21 +1423,12 @@
           } else {
             modalImageWrap.classList.remove("loading");
           }
-        }
-
-        const startWhenReady = () => {
-          modalImageWrap.classList.remove("loading");
-          setTimeout(() => {
-            if (modal.classList.contains("open") && !userPausedAutoScroll) {
-              startAutoScroll();
-            }
-          }, 3000);
-        };
-
-        if (modalImage.complete) {
-          startWhenReady();
+        } else if (project.image) {
+          modalImage.src = project.image;
+        } else if (project.coverImage) {
+          modalImage.src = project.coverImage;
         } else {
-          modalImage.onload = startWhenReady;
+          modalImageWrap.classList.remove("loading");
         }
 
         setTimeout(() => {
@@ -1379,6 +1441,8 @@
         hoverPauseEnabled = false;
         stopAutoScroll();
         modalImageWrap.classList.remove("loading");
+        modalImage.onload = null;
+        currentModalProjectIndex = -1;
         modal.classList.remove("open");
         modal.setAttribute("aria-hidden", "true");
       }
@@ -1560,13 +1624,13 @@
           `;
 
           card.querySelector("[data-preview]").addEventListener("click", () => {
-            openModal(project);
+            openProjectAtIndex(index);
           });
           const cardMedia = card.querySelector(".card-media");
           if (cardMedia) {
             cardMedia.classList.add("clickable-preview");
             cardMedia.addEventListener("click", () => {
-              openModal(project);
+              openProjectAtIndex(index);
             });
           }
           const cardImage = card.querySelector(".card-media img");
@@ -1604,6 +1668,18 @@
         modalImageWrap.scrollTo({ top: 0, behavior: "smooth" });
       });
 
+      modalPrev.addEventListener("click", () => {
+        if (currentModalProjectIndex > 0) {
+          openProjectAtIndex(currentModalProjectIndex - 1);
+        }
+      });
+
+      modalNext.addEventListener("click", () => {
+        if (currentModalProjectIndex >= 0 && currentModalProjectIndex < projects.length - 1) {
+          openProjectAtIndex(currentModalProjectIndex + 1);
+        }
+      });
+
       modalImageWrap.addEventListener("mouseenter", () => {
         if (!hoverPauseEnabled) return;
         stopAutoScroll();
@@ -1625,6 +1701,20 @@
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeProjectModal();
+          return;
+        }
+
+        if (!modal.classList.contains("open")) return;
+
+        if (event.key === "ArrowLeft" && currentModalProjectIndex > 0) {
+          event.preventDefault();
+          openProjectAtIndex(currentModalProjectIndex - 1);
+          return;
+        }
+
+        if (event.key === "ArrowRight" && currentModalProjectIndex < projects.length - 1) {
+          event.preventDefault();
+          openProjectAtIndex(currentModalProjectIndex + 1);
         }
       });
 
