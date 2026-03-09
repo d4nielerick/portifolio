@@ -625,6 +625,12 @@
       .modal-image-wrap img {
         width: 100%;
         display: block;
+        opacity: 1;
+        transition: opacity 0.18s ease;
+      }
+
+      .modal-image-wrap.loading img {
+        opacity: 0;
       }
 
       .modal-nav {
@@ -1162,6 +1168,7 @@
       let userPausedAutoScroll = false;
       let hoverPauseEnabled = false;
       let currentModalProjectIndex = -1;
+      let modalLoadingStartedAt = 0;
       let lenisInstance = null;
       let cardImageObserver = null;
       let chatHistory = [];
@@ -1366,6 +1373,19 @@
         modalNext.disabled = !hasNext;
       }
 
+      function beginModalLoading() {
+        modalLoadingStartedAt = Date.now();
+        modalImageWrap.classList.add("loading");
+      }
+
+      function endModalLoading() {
+        const elapsed = Date.now() - modalLoadingStartedAt;
+        const delay = Math.max(0, 180 - elapsed);
+        window.setTimeout(() => {
+          modalImageWrap.classList.remove("loading");
+        }, delay);
+      }
+
       async function openProjectAtIndex(index) {
         if (index < 0 || index >= projects.length) return;
         currentModalProjectIndex = index;
@@ -1386,7 +1406,7 @@
         modalImage.onload = null;
         modalImage.src = imagePlaceholder;
         modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
-        modalImageWrap.classList.add("loading");
+        beginModalLoading();
         modalImage.alt = `Preview completo do projeto ${project.name}`;
         modalTitle.textContent = project.name;
         modalDescription.textContent = project.description;
@@ -1404,7 +1424,7 @@
         modal.setAttribute("aria-hidden", "false");
 
         const startWhenReady = () => {
-          modalImageWrap.classList.remove("loading");
+          endModalLoading();
           modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
           setTimeout(() => {
             if (modal.classList.contains("open") && !userPausedAutoScroll) {
@@ -1421,14 +1441,14 @@
           if (modal.classList.contains("open") && fullImage) {
             modalImage.src = fullImage;
           } else {
-            modalImageWrap.classList.remove("loading");
+            endModalLoading();
           }
         } else if (project.image) {
           modalImage.src = project.image;
         } else if (project.coverImage) {
           modalImage.src = project.coverImage;
         } else {
-          modalImageWrap.classList.remove("loading");
+          endModalLoading();
         }
 
         setTimeout(() => {
