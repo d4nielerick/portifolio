@@ -1499,11 +1499,7 @@
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             const image = entry.target;
-            const nextSrc = image.dataset.src || "";
-            if (nextSrc) {
-              image.src = nextSrc;
-              image.removeAttribute("data-src");
-            }
+            loadCardImage(image);
             observer.unobserve(image);
           });
         }, {
@@ -1511,12 +1507,36 @@
         });
       }
 
-      function observeCardImage(image) {
+      async function fetchProjectCoverById(projectId) {
+        if (!projectId) return "";
+        try {
+          const response = await fetch(`/api/project-cover?id=${encodeURIComponent(projectId)}`);
+          if (!response.ok) return "";
+          const payload = await response.json();
+          return String(payload?.coverImage || "");
+        } catch {
+          return "";
+        }
+      }
+
+      async function loadCardImage(image) {
         const nextSrc = image.dataset.src || "";
-        if (!nextSrc) return;
-        if (!("IntersectionObserver" in window)) {
+        if (nextSrc) {
           image.src = nextSrc;
           image.removeAttribute("data-src");
+          return;
+        }
+
+        const projectId = String(image.dataset.projectId || "");
+        if (!projectId) return;
+        const coverImage = await fetchProjectCoverById(projectId);
+        if (!coverImage) return;
+        image.src = coverImage;
+      }
+
+      function observeCardImage(image) {
+        if (!("IntersectionObserver" in window)) {
+          loadCardImage(image);
           return;
         }
         ensureCardImageObserver();
@@ -1681,7 +1701,8 @@
           }
           const cardImage = card.querySelector(".card-media img");
           if (cardImage) {
-            cardImage.dataset.src = project.coverImage || project.image || imagePlaceholder;
+            cardImage.dataset.projectId = String(project.id || "");
+            cardImage.dataset.src = project.coverImage || project.image || "";
             observeCardImage(cardImage);
           }
           portfolioElement.appendChild(card);
