@@ -1386,6 +1386,19 @@
         }, delay);
       }
 
+      function preloadImageSource(source) {
+        return new Promise((resolve, reject) => {
+          if (!source) {
+            reject(new Error("Missing image source"));
+            return;
+          }
+          const img = new Image();
+          img.onload = () => resolve(source);
+          img.onerror = () => reject(new Error("Failed to load image"));
+          img.src = source;
+        });
+      }
+
       async function openProjectAtIndex(index) {
         if (index < 0 || index >= projects.length) return;
         currentModalProjectIndex = index;
@@ -1423,7 +1436,7 @@
         modal.classList.add("open");
         modal.setAttribute("aria-hidden", "false");
 
-        const startWhenReady = () => {
+        const finishModalImageLoad = () => {
           endModalLoading();
           modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
           setTimeout(() => {
@@ -1433,20 +1446,30 @@
           }, 3000);
         };
 
-        modalImage.onload = startWhenReady;
+        const showLoadedImage = async (source) => {
+          try {
+            const loadedSource = await preloadImageSource(source);
+            if (!modal.classList.contains("open")) return;
+            modalImage.src = loadedSource;
+          } catch {
+            if (!modal.classList.contains("open")) return;
+            modalImage.src = source || imagePlaceholder;
+          }
+          finishModalImageLoad();
+        };
 
         if (!project.image && project.id) {
           const fullProject = await fetchProjectDetailsById(project.id);
           const fullImage = fullProject?.image || fullProject?.coverImage || "";
           if (modal.classList.contains("open") && fullImage) {
-            modalImage.src = fullImage;
+            await showLoadedImage(fullImage);
           } else {
             endModalLoading();
           }
         } else if (project.image) {
-          modalImage.src = project.image;
+          await showLoadedImage(project.image);
         } else if (project.coverImage) {
-          modalImage.src = project.coverImage;
+          await showLoadedImage(project.coverImage);
         } else {
           endModalLoading();
         }
