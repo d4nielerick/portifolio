@@ -21,6 +21,7 @@ module.exports = async function handler(req, res) {
       return sendJson(res, 404, { error: "Projeto nao encontrado." });
     }
 
+    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
     return sendJson(res, 200, { project });
   } catch (error) {
     return sendJson(res, 500, {

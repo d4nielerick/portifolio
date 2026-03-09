@@ -1169,7 +1169,6 @@
       let hoverPauseEnabled = false;
       let currentModalProjectIndex = -1;
       let modalLoadingStartedAt = 0;
-      let lenisInstance = null;
       let cardImageObserver = null;
       let chatHistory = [];
       const projectDetailsCache = new Map();
@@ -1243,8 +1242,7 @@
             const projectsFromServer = fromServer.filter((item) =>
               item &&
               typeof item.id === "string" &&
-              typeof item.name === "string" &&
-              typeof item.coverImage === "string"
+              typeof item.name === "string"
             ).map((item) => {
               const { thumbImage, ...rest } = item || {};
               return {
@@ -1365,6 +1363,14 @@
         }
       }
 
+      function prefetchProjectDetails(projectId) {
+        if (!projectId || projectDetailsCache.has(projectId)) return;
+        const schedule = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 120));
+        schedule(() => {
+          fetchProjectDetailsById(projectId);
+        });
+      }
+
       function syncModalNavButtons() {
         const total = projects.length;
         const hasPrevious = currentModalProjectIndex > 0;
@@ -1439,11 +1445,8 @@
         const finishModalImageLoad = () => {
           endModalLoading();
           modalImageWrap.scrollTo({ top: 0, behavior: "auto" });
-          setTimeout(() => {
-            if (modal.classList.contains("open") && !userPausedAutoScroll) {
-              startAutoScroll();
-            }
-          }, 3000);
+          prefetchProjectDetails(projects[currentModalProjectIndex - 1]?.id);
+          prefetchProjectDetails(projects[currentModalProjectIndex + 1]?.id);
         };
 
         const showLoadedImage = async (source) => {
@@ -1779,48 +1782,6 @@
         await sendChatMessage(message);
       });
 
-      function initLenisSmoothScroll() {
-        if (lenisInstance) return;
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if (reduceMotion) return;
-        const lowPowerDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
-          || (navigator.deviceMemory && navigator.deviceMemory <= 4)
-          || Boolean(navigator.connection && navigator.connection.saveData);
-        if (lowPowerDevice || projects.length > 18) return;
-        if (typeof window.Lenis !== "function") {
-          const external = document.createElement("script");
-          external.src = "https://unpkg.com/lenis@1.3.11/dist/lenis.min.js";
-          external.onload = () => {
-            initLenisSmoothScroll();
-          };
-          external.onerror = () => {
-            console.warn("Lenis nao carregou; mantendo scroll nativo.");
-          };
-          document.head.appendChild(external);
-          return;
-        }
-
-        lenisInstance = new window.Lenis({
-          duration: 1.1,
-          smoothWheel: true,
-          wheelMultiplier: 0.95,
-          touchMultiplier: 1,
-          syncTouch: false,
-          easing: (t) => 1 - Math.pow(1 - t, 3),
-          prevent: (node) => {
-            if (!(node instanceof Element)) return false;
-            return Boolean(node.closest("#modal-image-wrap, textarea, select"));
-          }
-        });
-
-        const raf = (time) => {
-          if (!lenisInstance) return;
-          lenisInstance.raf(time);
-          requestAnimationFrame(raf);
-        };
-        requestAnimationFrame(raf);
-      }
-
       function initRoleTyping() {
         if (!roleTyping) return;
         const roles = ["DESIGNER", "WEB DESIGNER", "DEV LOW CODE"];
@@ -1859,7 +1820,6 @@
       async function initPortfolio() {
         await refreshProjects();
         renderProjects();
-        initLenisSmoothScroll();
         initRoleTyping();
       }
 
